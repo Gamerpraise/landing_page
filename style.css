@@ -1,0 +1,577 @@
+/* ===========================
+   RESET
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:'Segoe UI', Arial, Helvetica, sans-serif;
+    background:#02020a;
+    color:#e0e0ff;
+    line-height:1.7;
+    background-image: 
+        radial-gradient(circle at 20% 20%, rgba(0, 255, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+}
+
+img{
+    max-width:100%;
+    display:block;
+}
+
+a{
+    text-decoration:none;
+}
+
+.container{
+    width:92%;
+    max-width:1100px;
+    margin:auto;
+}
+
+/* ===========================
+   COLORS - ALIEN TECH
+=========================== */
+
+:root{
+    --neon-cyan:#00f5ff;
+    --neon-purple:#b300ff;
+    --neon-pink:#ff00a0;
+    --black:#02020a;
+    --dark:#0a0a1a;
+    --white:#ffffff;
+    --text:#a0a0c0;
+    --glass:rgba(10, 10, 26, 0.6);
+}
+
+/* ===========================
+   HEADER
+=========================== */
+
+.header{
+    background:rgba(2, 2, 10, 0.85);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(0, 245, 255, 0.2);
+    position:sticky;
+    top:0;
+    z-index:1000;
+    box-shadow:0 0 20px rgba(0, 245, 255, 0.1);
+}
+
+.nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 0;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--neon-cyan);
+    font-weight:bold;
+    font-size:20px;
+    text-shadow:0 0 10px var(--neon-cyan);
+}
+
+.logo img{
+    width:42px;
+    height:42px;
+    filter:drop-shadow(0 0 8px var(--neon-cyan));
+}
+
+/* ===========================
+   BUTTONS
+=========================== */
+
+.btn{
+    display:inline-block;
+    background:linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+    color:#02020a;
+    padding:14px 28px;
+    border-radius:8px;
+    font-weight:bold;
+    transition:.3s;
+    border:none;
+    box-shadow:0 0 15px rgba(0, 245, 255, 0.4);
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 25px rgba(179, 0, 255, 0.6);
+}
+
+.btn-small{ padding:10px 18px; font-size:14px; }
+.btn-large{ font-size:18px; }
+
+.btn-outline{
+    display:inline-block;
+    border:2px solid var(--neon-cyan);
+    color:var(--neon-cyan);
+    background:transparent;
+    padding:13px 28px;
+    border-radius:8px;
+    margin-left:10px;
+    transition:.3s;
+    box-shadow:0 0 10px rgba(0, 245, 255, 0.2);
+}
+
+.btn-outline:hover{
+    background:var(--neon-cyan);
+    color:#02020a;
+    box-shadow:0 0 20px var(--neon-cyan);
+}
+
+/* ===========================
+   HERO
+=========================== */
+
+.hero{
+    background:transparent;
+    padding:90px 0;
+    position:relative;
+}
+
+.hero-grid{
+    display:grid;
+    gap:40px;
+}
+
+.badge{
+    display:inline-block;
+    background:linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+    color:#fff;
+    padding:8px 14px;
+    border-radius:30px;
+    margin-bottom:20px;
+    font-size:14px;
+    box-shadow:0 0 15px rgba(255, 0, 160, 0.4);
+    animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+    0%, 100%{ box-shadow:0 0 15px rgba(255, 0, 160, 0.4); }
+    50%{ box-shadow:0 0 25px rgba(255, 0, 160, 0.7); }
+}
+
+.hero h1{
+    font-size:36px;
+    line-height:1.2;
+    margin-bottom:18px;
+    color:#fff;
+    text-shadow:0 0 20px rgba(0, 245, 255, 0.5);
+}
+
+.hero p{ color:var(--text); margin-bottom:25px; }
+
+.price{
+    color:var(--neon-cyan);
+    font-size:42px;
+    font-weight:bold;
+    margin-bottom:25px;
+    text-shadow:0 0 15px var(--neon-cyan);
+}
+
+.hero-buttons{ margin-bottom:30px; }
+.hero-features{ list-style:none; }
+.hero-features li{ margin-bottom:10px; color:var(--text); }
+
+.hero-image img{
+    border-radius:14px;
+    border:2px solid rgba(0, 245, 255, 0.3);
+    box-shadow:0 0 30px rgba(0, 245, 255, 0.2);
+}
+
+/* ===========================
+   SECTIONS
+=========================== */
+
+section{ padding:70px 0; }
+
+.section-title{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.section-title h2{
+    font-size:30px;
+    margin-bottom:10px;
+    color:#fff;
+    text-shadow:0 0 15px rgba(179, 0, 255, 0.4);
+}
+
+.section-title p{ color:var(--text); }
+
+/* ===========================
+   CARDS
+=========================== */
+
+.cards{ display:grid; gap:20px; }
+
+.card{
+    background:var(--glass);
+    backdrop-filter:blur(10px);
+    padding:25px;
+    border-radius:12px;
+    border:1px solid rgba(0, 245, 255, 0.15);
+    box-shadow:0 8px 32px rgba(0, 0, 0, 0.3);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    border-color:var(--neon-cyan);
+    box-shadow:0 0 25px rgba(0, 245, 255, 0.3);
+}
+
+.card h3{ margin-bottom:12px; color:var(--neon-cyan); }
+
+/* ===========================
+   TIMELINE
+=========================== */
+
+.timeline{ display:grid; gap:20px; }
+
+.lesson{
+    background:var(--glass);
+    backdrop-filter:blur(10px);
+    border-left:3px solid var(--neon-purple);
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 5px 20px rgba(0, 0, 0, 0.3);
+    transition:.3s;
+}
+
+.lesson:hover{
+    border-left-color:var(--neon-cyan);
+    box-shadow:0 0 20px rgba(179, 0, 255, 0.2);
+}
+
+.lesson span{
+    display:inline-block;
+    background:linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+    color:#fff;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:13px;
+    margin-bottom:12px;
+    box-shadow:0 0 10px rgba(179, 0, 255, 0.3);
+}
+
+.lesson h3{ margin-bottom:10px; color:#fff; }
+.lesson p{ color:var(--text); }
+
+/* ===========================
+   CERTIFICATE
+=========================== */
+
+.certificate{ background:rgba(10, 10, 26, 0.5); }
+
+.cert-grid{ display:grid; gap:30px; align-items:center; }
+
+.certificate img{
+    border-radius:12px;
+    border:2px solid rgba(0, 245, 255, 0.3);
+    box-shadow:0 0 30px rgba(0, 245, 255, 0.2);
+}
+
+.certificate h2{
+    margin-bottom:15px;
+    font-size:30px;
+    color:#fff;
+    text-shadow:0 0 15px rgba(0, 245, 255, 0.4);
+}
+
+.certificate p{ color:var(--text); margin-bottom:25px; }
+
+/* ===========================
+   FAQ
+=========================== */
+
+.faq-item{
+    background:var(--glass);
+    backdrop-filter:blur(10px);
+    margin-bottom:15px;
+    border-radius:10px;
+    overflow:hidden;
+    border:1px solid rgba(0, 245, 255, 0.1);
+    box-shadow:0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.faq-question{
+    width:100%;
+    padding:18px;
+    border:none;
+    background:transparent;
+    color:#fff;
+    text-align:left;
+    cursor:pointer;
+    font-size:17px;
+    font-weight:bold;
+}
+
+.faq-answer{
+    display:none;
+    padding:0 18px 18px;
+    color:var(--text);
+}
+
+.faq-item.active .faq-answer{ display:block; }
+
+/* ===========================
+   CTA
+=========================== */
+
+.cta{
+    background:linear-gradient(135deg, #0a0a1a 0%, #02020a 100%);
+    color:#fff;
+    text-align:center;
+    border-top:1px solid rgba(0, 245, 255, 0.2);
+    border-bottom:1px solid rgba(179, 0, 255, 0.2);
+}
+
+.cta h2{
+    font-size:34px;
+    margin-bottom:15px;
+    text-shadow:0 0 20px rgba(179, 0, 255, 0.5);
+}
+
+.cta p{ margin-bottom:30px; color:var(--text); }
+
+/* ===========================
+   FOOTER
+=========================== */
+
+footer{
+    background:#02020a;
+    color:var(--text);
+    text-align:center;
+    padding:25px 15px;
+    border-top:1px solid rgba(0, 245, 255, 0.1);
+}
+
+/* ===========================
+   STICKY ENROLL BUTTON
+=========================== */
+
+.sticky-btn{
+    position:fixed;
+    left:15px;
+    right:15px;
+    bottom:15px;
+    background:linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+    color:#fff;
+    text-align:center;
+    padding:16px;
+    border-radius:12px;
+    font-weight:bold;
+    font-size:17px;
+    box-shadow:0 0 25px rgba(255, 0, 160, 0.5);
+    z-index:999;
+    transition:.3s;
+    border:none;
+}
+
+.sticky-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 0 35px rgba(179, 0, 255, 0.7);
+}
+
+/* ===========================
+   RESPONSIVE - FIXED
+=========================== */
+
+@media(min-width:768px){
+    .hero-grid{
+        grid-template-columns:1fr 1fr;
+        align-items:center;
+    }
+    .cards{ grid-template-columns:repeat(2,1fr); }
+    .timeline{ grid-template-columns:repeat(2,1fr); }
+    .cert-grid{ grid-template-columns:1fr 1fr; }
+} /* <-- THIS WAS MISSING */
+
+@media(min-width:1024px){
+    .cards{ grid-template-columns:repeat(3,1fr); }
+    .hero h1{ font-size:52px; }
+    .section-title h2{ font-size:38px; }
+    .timeline{ grid-template-columns:repeat(3,1fr); }
+    .sticky-btn{
+        width:320px;
+        left:auto;
+        right:25px;
+    }
+}
+
+/* ===========================
+   GLITCH ALIEN TECH REVEAL
+=========================== */
+
+.card,
+.lesson,
+.certificate,
+.faq-item{
+    opacity:0;
+    transform:translateY(20px);
+    filter: hue-rotate(90deg);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+}
+
+.show{
+    opacity:1;
+    transform:translateY(0);
+    filter: hue-rotate(0deg);
+    animation: glitchIn 0.6s ease;
+}
+
+/* Glitch effect when it appears */
+@keyframes glitchIn{
+    0%{ clip-path: inset(100% 0 0 0); transform: translateX(-5px); }
+    20%{ clip-path: inset(0 0 90% 0); transform: translateX(5px); }
+    40%{ clip-path: inset(50% 0 30% 0); transform: translateX(-3px); }
+    60%{ clip-path: inset(0 0 50% 0); transform: translateX(3px); }
+    80%{ clip-path: inset(0 0 0 0); transform: translateX(-1px); }
+    100%{ clip-path: inset(0 0 0 0); transform: translateX(0); }
+}
+
+/* Scanline overlay for alien feel */
+.card::after,
+.lesson::after{
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+        transparent,
+        transparent 2px,
+        rgba(0, 245, 255, 0.03) 3px
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+.show::after{
+    opacity: 1;
+}
+
+/* ===========================
+   CONSTANT ALIEN GLITCH EFFECTS
+=========================== */
+
+/* 1. Background Scanline - always moving */
+body::before{
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,0) 0px,
+        rgba(0,0,0,0) 1px,
+        rgba(0,245,255,0.03) 2px,
+        rgba(0,0,0,0) 3px
+    );
+    background-size: 100% 4px;
+    animation: scanlineMove 8s linear infinite;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+@keyframes scanlineMove{
+    0%{ background-position: 0 0; }
+    100%{ background-position: 0 100%; }
+}
+
+/* 2. Random Glitch on Cards */
+.card, .lesson{
+    position: relative;
+}
+.card.glitch, .lesson.glitch{
+    animation: randomGlitch 0.3s;
+}
+
+@keyframes randomGlitch{
+    0%{ transform: translate(0); filter: hue-rotate(0); }
+    20%{ transform: translate(-3px, 2px); filter: hue-rotate(90deg); }
+    40%{ transform: translate(3px, -1px); filter: hue-rotate(180deg); }
+    60%{ transform: translate(-2px, -2px); filter: hue-rotate(270deg); }
+    80%{ transform: translate(2px, 1px); }
+    100%{ transform: translate(0); filter: hue-rotate(0); }
+}
+
+/* 3. Text Flicker for Headings */
+.hero h1, .section-title h2{
+    position: relative;
+}
+.hero h1.flicker::before,
+.section-title h2.flicker::before{
+    content: attr(data-text);
+    position: absolute;
+    left: 2px; top: 0;
+    text-shadow: -2px 0 var(--neon-pink);
+    clip-path: polygon(0 2%, 100% 2%, 100% 5%, 0 5%);
+    animation: flickerOne 0.2s;
+}
+.hero h1.flicker::after,
+.section-title h2.flicker::after{
+    content: attr(data-text);
+    position: absolute;
+    left: -2px; top: 0;
+    text-shadow: 2px 0 var(--neon-cyan);
+    clip-path: polygon(0 80%, 100% 80%, 100% 83%, 0 83%);
+    animation: flickerTwo 0.2s;
+}
+
+@keyframes flickerOne{
+    0%,100%{ opacity: 0; }
+    50%{ opacity: 1; }
+}
+@keyframes flickerTwo{
+    0%,100%{ opacity: 0; }
+    50%{ opacity: 1; }
+}
+/* ===========================
+   TV SHUTDOWN EFFECT
+=========================== */
+
+.tv-shutdown{
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #000;
+    z-index: 99999;
+    pointer-events: none;
+    animation: tvOff 0.8s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes tvOff{
+    0%{
+        height: 100%;
+        box-shadow: 0 0 100px rgba(0, 245, 255, 0.8);
+    }
+    30%{
+        height: 100%;
+        filter: brightness(2) contrast(2);
+    }
+    60%{
+        height: 5px;
+        top: 50%;
+        box-shadow: 0 0 50px rgba(0, 245, 255, 1);
+    }
+    100%{
+        height: 0;
+        top: 50%;
+        box-shadow: 0 0 0 rgba(0, 245, 255, 0);
+    }
+}
