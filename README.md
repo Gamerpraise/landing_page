@@ -106,7 +106,7 @@ If you don't know CSS or JavaScript, use this free AI tool.
 
 *Website: https://zzzcode.ai/code-generator*
 
-*To Change http://style.css (Colors, Fonts, Buttons):*
+*To Change style.css (Colors, Fonts, Buttons):*
 1. Go to https://zzzcode.ai/code-generator
 2. In the first small box, type: `CSS`
 3. In the second big box, paste your full `style.css` code
