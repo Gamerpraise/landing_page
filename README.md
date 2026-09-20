@@ -3,7 +3,7 @@
 
 A clean, responsive, high-converting landing page template built with **HTML, CSS & JS** only. No framework needed. Perfect for selling any course, product or service.
 
-🔗 **Live Demo:** https://gamerpraise.github.io/landing_page/
+🔗 **Live Demo:** https://webdev-seven-mauve.vercel.app/
 
 Created by **Gpraise**
 
