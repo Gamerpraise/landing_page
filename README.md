@@ -55,6 +55,7 @@ pkg install git -y
 git clone https://github.com/Gamerpraise/landing_page.git
 cd landing_page
 ls
+```
 Now the whole template is in your phone storage at `/data/data/com.termux/files/home/landing_page`
 
 *Step 3: Open in Editor*
