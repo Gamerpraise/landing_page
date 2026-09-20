@@ -109,7 +109,7 @@ If you don't know CSS or JavaScript, use this free AI tool.
 
 🌐 *Website:* https://zzzcode.ai/code-generator
 
-*To Change http://style.css (Colors, Fonts, Buttons):*
+*To Change `style.css` (Colors, Fonts, Buttons):*
 1. Go to https://zzzcode.ai/code-generator
 2. In the first small box, type: `CSS`
 3. In the second big box, paste your full `style.css` code
@@ -161,17 +161,6 @@ Template by *Gpraise*. If you need help editing, message me on WhatsApp.
 <a href="https://wa.me/2348057940822?text=Hello%20Gpraise%2C%20please%20I%20need%20help%20on%20how%20to%20set%20up%20landing_page%20repo">
   <img src="https://img.shields.io/badge/Chat%20on%20WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp Icon" />
 </a>
-
----
-
-🔗 Useful Links
-
-https://img.shields.io/badge/Live%20Demo-181717?style=for-the-badge&logo=github&logoColor=white](https://gamerpraise.github.io/landing_page/)
-https://img.shields.io/badge/Deploy%20on%20Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white](https://www.netlify.com)
-https://img.shields.io/badge/Deploy%20on%20Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white](https://vercel.com)
-https://img.shields.io/badge/ZZZ%20Code%20AI-6A5ACD?style=for-the-badge&logo=openai&logoColor=white](https://zzzcode.ai/code-generator)
-https://img.shields.io/badge/Spck%20Editor-4285F4?style=for-the-badge&logo=googleplay&logoColor=white](https://play.google.com/store/apps/details?id=io.spck)
-https://img.shields.io/badge/Termux-FDroid-1976D2?style=for-the-badge&logo=f-droid&logoColor=white](https://f-droid.org/en/packages/com.termux/)
 
 ---
 © 2026 Gpraise - Landing Page Template. All Rights Reserved.
