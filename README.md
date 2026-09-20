@@ -1,10 +1,13 @@
-Landing Page Template by Gpraise
 
-A clean, responsive, high-converting landing page template built with HTML, CSS & JS only. No framework needed. Perfect for selling any course, product or service.
+🚀 Landing Page Template by Gpraise
 
-Live Demo: `https://gamerpraise.github.io/landing_page/`
+A clean, responsive, high-converting landing page template built with **HTML, CSS & JS** only. No framework needed. Perfect for selling any course, product or service.
+
+🔗 **Live Demo:** https://gamerpraise.github.io/landing_page/
 
 Created by **Gpraise**
+
+---
 
 📁 What You Get
 - `index.html` - Main page structure
@@ -52,7 +55,6 @@ pkg install git -y
 git clone https://github.com/Gamerpraise/landing_page.git
 cd landing_page
 ls
-```
 Now the whole template is in your phone storage at `/data/data/com.termux/files/home/landing_page`
 
 *Step 3: Open in Editor*
@@ -66,7 +68,7 @@ git push
 
 🖼️ What To Change / Replace
 
-1. Change Your Images
+*1. Change Your Images*
 Go to `assets/` folder and replace these files with your own, KEEP SAME NAME:
 File to Replace	What it is
 `assets/logo.png`	Your logo on top
@@ -75,7 +77,7 @@ File to Replace	What it is
 `assets/certificate.png`	Certificate / product image
 > Tip: Use 1:1 size for logo (200x200px), hero image should be 600x600px PNG for best quality.
 
-2. Change Your Payment Link (Selar Link)
+*2. Change Your Payment Link (Selar Link)*
 This is VERY important. Your Selar link is in 6 places.
 
 Open `index.html` and Find & Replace:
@@ -86,7 +88,7 @@ Replace with: `YOUR OWN SELAR LINK`
 
 In Spck Editor: Click search icon > Replace All. It will change all Enroll buttons at once.
 
-3. Change Price
+*3. Change Price*
 Search in `index.html` for `$15` and replace with your price e.g `$20` or `₦15,000`
 
 There are 3 places:
@@ -94,7 +96,7 @@ There are 3 places:
 - CTA section: `Get Full Access for $15`
 - Sticky button: `Enroll Now for $15`
 
-4. Change Text & Colors
+*4. Change Text & Colors*
 - To change text: Just edit inside `index.html` - all text is clearly labeled.
 - To change colors: Open `style.css` and at the top look for `:root` colors and change them.
 
@@ -104,9 +106,9 @@ There are 3 places:
 
 If you don't know CSS or JavaScript, use this free AI tool.
 
-*Website: https://zzzcode.ai/code-generator*
+🌐 *Website:* https://zzzcode.ai/code-generator
 
-*To Change style.css (Colors, Fonts, Buttons):*
+*To Change http://style.css (Colors, Fonts, Buttons):*
 1. Go to https://zzzcode.ai/code-generator
 2. In the first small box, type: `CSS`
 3. In the second big box, paste your full `style.css` code
@@ -139,18 +141,36 @@ You have 3 free options:
 3. Wait 2 minutes, your site will be live at: `https://gamerpraise.github.io/landing_page/`
 
 *2. Netlify (Best for custom domain)*
-1. Go to http://netlify.com > Drag and drop your entire project folder
+1. Go to https://www.netlify.com > Drag and drop your entire project folder
 2. Done. Live link in 10 seconds.
 
 *3. Vercel*
-1. Go to http://vercel.com > Add New Project > Import your GitHub repo `landing_page`
+1. Go to https://vercel.com > Add New Project > Import your GitHub repo `landing_page`
 2. Click Deploy.
 
-📱 After Hosting
+*📱 After Hosting*
 Copy your live link and put it in your WhatsApp bio, Instagram bio, TikTok and Facebook to start getting sales.
 
-Need Help?
-Template by Gpraise. If you need help editing, message me on WhatsApp.
+---
+
+📞 Need Help?
+
+Template by *Gpraise*. If you need help editing, message me on WhatsApp.
+
+<a href="https://wa.me/2348057940822?text=Hello%20Gpraise%2C%20please%20I%20need%20help%20on%20how%20to%20set%20up%20landing_page%20repo">
+  <img src="https://img.shields.io/badge/Chat%20on%20WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp Icon" />
+</a>
+
+---
+
+🔗 Useful Links
+
+https://img.shields.io/badge/Live%20Demo-181717?style=for-the-badge&logo=github&logoColor=white](https://gamerpraise.github.io/landing_page/)
+https://img.shields.io/badge/Deploy%20on%20Netlify-00C7B7?style=for-the-badge&logo=netlify&logoColor=white](https://www.netlify.com)
+https://img.shields.io/badge/Deploy%20on%20Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white](https://vercel.com)
+https://img.shields.io/badge/ZZZ%20Code%20AI-6A5ACD?style=for-the-badge&logo=openai&logoColor=white](https://zzzcode.ai/code-generator)
+https://img.shields.io/badge/Spck%20Editor-4285F4?style=for-the-badge&logo=googleplay&logoColor=white](https://play.google.com/store/apps/details?id=io.spck)
+https://img.shields.io/badge/Termux-FDroid-1976D2?style=for-the-badge&logo=f-droid&logoColor=white](https://f-droid.org/en/packages/com.termux/)
 
 ---
 © 2026 Gpraise - Landing Page Template. All Rights Reserved.
