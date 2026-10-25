@@ -1,6 +1,6 @@
 # BusyHands – 3D Knitwear Store with Name Customizer
 
-A clean online store for a hand-knitting business. Customers spin products in 3D, add their name in yarn, and send the order to the seller on **WhatsApp**. The seller uses the **Admin page** to upload products, manage categories and see the exact design each customer picked.
+A pink, girly 3D online store for a hand-knitting business. Customers spin products in 3D, add their name in yarn, and send the order to the seller on **WhatsApp**. The seller uses the **Admin page** to upload products, manage categories and see the exact design each customer picked.
 
 Plain **HTML, CSS & JavaScript** + **Firebase**. No build step, no assets folder: every product, category and setting is added through Admin.
 

@@ -187,8 +187,8 @@ function renderCats(){
   $("#cCount").textContent = cats.length ? `(${cats.length})` : "";
   $("#catList").innerHTML = cats.length ? cats.map((c, i) => {
     const n = products.filter(p => p.cat === c.name).length;
-    return `<div class="catrow"><div class="ci-t"><b>${esc(c.name)}</b><span>${esc(c.text || "")}${c.text ? " · " : ""}${n} product${n === 1 ? "" : "s"}</span></div>
-      <button class="mini" data-cup="${i}" aria-label="Move up" ${i === 0 ? "disabled" : ""}>Move up</button><button class="mini danger" data-cdel="${i}">Delete</button></div>`; }).join("")
+    return `<div class="catrow"><span class="ci-ico">${esc(c.icon || "🧶")}</span><div class="ci-t"><b>${esc(c.name)}</b><span>${esc(c.text || "")}${c.text ? " · " : ""}${n} product${n === 1 ? "" : "s"}</span></div>
+      <button class="mini" data-cup="${i}" aria-label="Move up" ${i === 0 ? "disabled" : ""}>↑</button><button class="mini danger" data-cdel="${i}">Delete</button></div>`; }).join("")
     : `<p class="empty">No categories yet. Add your first one above, then pick it when you add products.</p>`;
   fillCatSelect($("#pCat").value || "");
 }
@@ -197,11 +197,11 @@ async function saveCats(msg){
   catch(err){ $("#cMsg").textContent = "Couldn't save: " + (err.code || err.message) + (err.code === "permission-denied" ? " (publish firestore.rules in Firebase)" : ""); await loadSettings(); }
 }
 $("#addCat").onclick = async () => {
-  const name = $("#cName").value.trim().replace(/\s+/g, " "), text = $("#cText").value.trim();
+  const name = $("#cName").value.trim().replace(/\s+/g, " "), icon = $("#cIcon").value.trim() || "🧶", text = $("#cText").value.trim();
   if(!name) return ($("#cMsg").textContent = "Please type a category name.");
   if(cats.some(c => c.name.toLowerCase() === name.toLowerCase())) return ($("#cMsg").textContent = "You already have that category.");
-  $("#cMsg").textContent = ""; cats = [...cats, { name, text }];
-  await saveCats("Category added"); $("#cName").value = ""; $("#cText").value = "";
+  $("#cMsg").textContent = ""; cats = [...cats, { name, icon, text }];
+  await saveCats("Category added ✔"); $("#cName").value = ""; $("#cIcon").value = ""; $("#cText").value = "";
 };
 $("#catList").onclick = async e => {
   const up = e.target.closest("[data-cup]"), del = e.target.closest("[data-cdel]");
