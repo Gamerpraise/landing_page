@@ -1,35 +1,46 @@
-import { fbAuth, ADMIN_EMAIL } from "./firebase.js";
+import { fbAuth } from "./firebase.js";
 import { COLORS, esc, designHTML } from "./design.js";
 
-const CATS = ["Sweaters","Dresses","Gloves","Shorts","Hats & Scarves","Other"];
 const $ = s => document.querySelector(s);
 const toast = m => { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 2200); };
-let K, products = [], orders = [], settings = { currency:"₦" }, editId = null, newImg = null, oldImg = null, timer;
+let K, products = [], orders = [], cats = [], settings = { currency:"₦" }, editId = null, newImg = null, oldImg = null, timer;
 
-$("#pCat").innerHTML = CATS.map(c => `<option>${c}</option>`).join("");
 const money = n => (settings.currency || "") + Number(n || 0).toLocaleString();
 
-/* ---------- Sign in ---------- */
+/* ---------- Sign in (email + password) ---------- */
+const authMsg = e => ({
+  "auth/invalid-credential":"Wrong email or password.", "auth/wrong-password":"Wrong email or password.", "auth/user-not-found":"Wrong email or password.",
+  "auth/invalid-email":"That email doesn't look right.", "auth/too-many-requests":"Too many tries. Wait a few minutes or reset your password.",
+  "auth/network-request-failed":"No internet connection.", "auth/operation-not-allowed":"Email/Password sign-in is not turned on in Firebase yet.",
+  "auth/unauthorized-domain":"Add this website's domain in Firebase → Authentication → Settings → Authorized domains."
+}[e.code] || ("Sign-in failed: " + (e.code || e.message)));
+
 async function start(){
   K = await fbAuth();
   if(!K){ $("#loginErr").textContent = "Can't reach Firebase. Check your internet connection and try again."; return; }
-  const { auth, au } = K; let denied = "";
+  const { auth, au, fs, db } = K; let denied = "";
   au.onAuthStateChanged(auth, async user => {
     if(!user){ show("login"); $("#loginErr").textContent = denied; return; }
-    if(user.email !== ADMIN_EMAIL || user.emailVerified === false){
-      denied = `${user.email} is not allowed here. Only the shop owner can open admin.`;
+    /* The real gate is firestore.rules. Ask for the orders list: only the admin account is allowed to read it. */
+    try { await fs.getDocs(fs.query(fs.collection(db, "orders"), fs.limit(1))); }
+    catch(e){
+      denied = e.code === "permission-denied"
+        ? `This account isn't the shop admin yet. If this is your store, paste this ID into firestore.rules and publish: ${user.uid}`
+        : "Couldn't check admin access (" + (e.code || e.message) + "). Try again.";
       await au.signOut(auth); return;
     }
     denied = ""; $("#who").textContent = user.email; show("app"); loadAll(); clearInterval(timer); timer = setInterval(loadOrders, 20000);
   });
-  $("#googleBtn").onclick = async () => {
-    $("#loginErr").textContent = "";
-    try { await au.signInWithPopup(auth, new au.GoogleAuthProvider()); }
-    catch(e){
-      if(["auth/popup-blocked","auth/operation-not-supported-in-this-environment"].includes(e.code)) return au.signInWithRedirect(auth, new au.GoogleAuthProvider());
-      if(e.code === "auth/unauthorized-domain") $("#loginErr").textContent = "Add this website's domain in Firebase → Authentication → Settings → Authorized domains.";
-      else if(e.code !== "auth/popup-closed-by-user") $("#loginErr").textContent = "Sign-in failed: " + (e.code || e.message);
-    }
+  $("#loginForm").onsubmit = async e => {
+    e.preventDefault(); denied = ""; $("#loginErr").textContent = ""; const b = $("#loginBtn"); b.disabled = true; b.textContent = "Signing in…";
+    try { await au.signInWithEmailAndPassword(auth, $("#lEmail").value.trim(), $("#lPass").value); }
+    catch(err){ $("#loginErr").textContent = authMsg(err); }
+    b.disabled = false; b.textContent = "Sign in";
+  };
+  $("#forgotBtn").onclick = async () => {
+    const em = $("#lEmail").value.trim(); if(!em) return ($("#loginErr").textContent = "Type your email above first, then tap Forgot password.");
+    try { await au.sendPasswordResetEmail(auth, em); $("#loginErr").textContent = "If that email has an account, a reset link is on its way. Check spam too."; }
+    catch(err){ $("#loginErr").textContent = authMsg(err); }
   };
   $("#signOut").onclick = () => au.signOut(auth);
 }
@@ -38,7 +49,7 @@ function show(w){ $("#login").classList.toggle("hidden", w !== "login"); $("#app
 /* ---------- Tabs ---------- */
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
   document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x === t));
-  ["orders","products","settings"].forEach(n => $("#tab-" + n).classList.toggle("hidden", n !== t.dataset.tab));
+  ["orders","products","categories","settings"].forEach(n => $("#tab-" + n).classList.toggle("hidden", n !== t.dataset.tab));
 });
 
 /* ---------- Load data ---------- */
@@ -47,11 +58,12 @@ async function loadSettings(){
   try { const s = await K.fs.getDoc(K.fs.doc(K.db, "settings", "store"));
     if(s.exists()) settings = { ...settings, ...s.data() };
     $("#sWa").value = settings.whatsapp || ""; $("#sName").value = settings.name || "BusyHands"; $("#sCur").value = settings.currency || "₦";
+    cats = Array.isArray(settings.categories) ? settings.categories : []; renderCats();
   } catch(e){ toast("Couldn't load settings – check Firestore rules"); }
 }
 async function loadProducts(){
   try { const r = await K.fs.getDocs(K.fs.collection(K.db, "products"));
-    products = r.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b) => (b.ts||0) - (a.ts||0)); renderProducts();
+    products = r.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b) => (b.ts||0) - (a.ts||0)); renderProducts(); renderCats();
   } catch(e){ toast("Couldn't load products – check Firestore rules"); }
 }
 async function loadOrders(){
@@ -128,16 +140,21 @@ function renderProducts(){
     <div class="row"><button class="mini" data-edit="${p.id}">Edit</button><button class="mini danger" data-del="${p.id}">Delete</button></div></div>`).join("")
     : `<p class="empty" style="grid-column:1/-1">No products yet. Add your first one above 👆<br><span class="small">Until then, customers see sample products.</span></p>`;
 }
+function fillCatSelect(keep){
+  const list = cats.map(c => c.name); if(keep && !list.includes(keep)) list.push(keep);
+  $("#pCat").innerHTML = list.length ? list.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("") : `<option value="">No categories yet</option>`;
+  if(keep) $("#pCat").value = keep;
+}
 function resetForm(){
   editId = null; newImg = null; oldImg = null; $("#pFile").value = "";
-  ["#pName","#pTag","#pPrice","#pOld"].forEach(s => $(s).value = ""); $("#pCustom").checked = true; $("#pCat").selectedIndex = 0;
+  ["#pName","#pTag","#pPrice","#pOld"].forEach(s => $(s).value = ""); $("#pCustom").checked = true; fillCatSelect();
   $("#pv").textContent = "No photo yet"; $("#formTitle").textContent = "Add a product"; $("#cancelEdit").classList.add("hidden"); $("#saveProduct").textContent = "Save product";
 }
 $("#cancelEdit").onclick = resetForm;
 $("#plist").onclick = async e => {
   const ed = e.target.closest("[data-edit]"), del = e.target.closest("[data-del]");
   if(ed){ const p = products.find(x => x.id === ed.dataset.edit); editId = p.id; oldImg = p.image; newImg = null;
-    $("#pName").value = p.name; $("#pCat").value = p.cat; $("#pTag").value = p.tag || ""; $("#pPrice").value = p.price; $("#pOld").value = p.old || ""; $("#pCustom").checked = !!p.custom;
+    $("#pName").value = p.name; fillCatSelect(p.cat); $("#pTag").value = p.tag || ""; $("#pPrice").value = p.price; $("#pOld").value = p.old || ""; $("#pCustom").checked = !!p.custom;
     $("#pv").innerHTML = `<img src="${esc(p.image)}" alt="">`; $("#formTitle").textContent = "Edit product"; $("#saveProduct").textContent = "Update product"; $("#cancelEdit").classList.remove("hidden");
     $("#pvInfo").textContent = "Choose a new photo only if you want to change it."; scrollTo({ top:0, behavior:"smooth" }); }
   if(del && confirm("Delete this product?")){ try { await K.fs.deleteDoc(K.fs.doc(K.db, "products", del.dataset.del)); toast("Deleted"); await loadProducts(); } catch(err){ toast("Failed: " + (err.code || err.message)); } }
@@ -147,7 +164,7 @@ $("#saveProduct").onclick = async () => {
   if(!image) return ($("#pMsg").textContent = "Please add a product photo.");
   if(!name) return ($("#pMsg").textContent = "Please type the product name.");
   if(!(price >= 0) || $("#pPrice").value === "") return ($("#pMsg").textContent = "Please enter a price.");
-  const data = { name, cat:$("#pCat").value, tag:$("#pTag").value.trim(), price, old:Number($("#pOld").value) || 0, custom:$("#pCustom").checked, image };
+  const data = { name, cat:$("#pCat").value || "", tag:$("#pTag").value.trim(), price, old:Number($("#pOld").value) || 0, custom:$("#pCustom").checked, image };
   const b = $("#saveProduct"); b.disabled = true; $("#pMsg").textContent = "Saving…";
   try {
     const { fs, db } = K;
@@ -158,12 +175,40 @@ $("#saveProduct").onclick = async () => {
   b.disabled = false;
 };
 
+/* ---------- Categories (the seller decides these) ---------- */
+function renderCats(){
+  $("#cCount").textContent = cats.length ? `(${cats.length})` : "";
+  $("#catList").innerHTML = cats.length ? cats.map((c, i) => {
+    const n = products.filter(p => p.cat === c.name).length;
+    return `<div class="catrow"><span class="ci-ico">${esc(c.icon || "🧶")}</span><div class="ci-t"><b>${esc(c.name)}</b><span>${esc(c.text || "")}${c.text ? " · " : ""}${n} product${n === 1 ? "" : "s"}</span></div>
+      <button class="mini" data-cup="${i}" aria-label="Move up" ${i === 0 ? "disabled" : ""}>↑</button><button class="mini danger" data-cdel="${i}">Delete</button></div>`; }).join("")
+    : `<p class="empty">No categories yet 🏷️<br>Add your first one above, then pick it when you add products.</p>`;
+  fillCatSelect($("#pCat").value || "");
+}
+async function saveCats(msg){
+  try { await K.fs.setDoc(K.fs.doc(K.db, "settings", "store"), { categories: cats }, { merge:true }); settings.categories = cats; renderCats(); renderProducts(); toast(msg); }
+  catch(err){ $("#cMsg").textContent = "Couldn't save: " + (err.code || err.message) + (err.code === "permission-denied" ? " (publish firestore.rules in Firebase)" : ""); await loadSettings(); }
+}
+$("#addCat").onclick = async () => {
+  const name = $("#cName").value.trim().replace(/\s+/g, " "), icon = $("#cIcon").value.trim() || "🧶", text = $("#cText").value.trim();
+  if(!name) return ($("#cMsg").textContent = "Please type a category name.");
+  if(cats.some(c => c.name.toLowerCase() === name.toLowerCase())) return ($("#cMsg").textContent = "You already have that category.");
+  $("#cMsg").textContent = ""; cats = [...cats, { name, icon, text }];
+  await saveCats("Category added ✔"); $("#cName").value = ""; $("#cIcon").value = ""; $("#cText").value = "";
+};
+$("#catList").onclick = async e => {
+  const up = e.target.closest("[data-cup]"), del = e.target.closest("[data-cdel]");
+  if(up){ const i = +up.dataset.cup; if(i > 0){ cats = [...cats]; [cats[i-1], cats[i]] = [cats[i], cats[i-1]]; await saveCats("Order saved ✔"); } }
+  if(del){ const i = +del.dataset.cdel, c = cats[i], n = products.filter(p => p.cat === c.name).length;
+    if(confirm(n ? `Delete “${c.name}”? ${n} product(s) use it. They stay in your shop but won't appear under this category.` : `Delete “${c.name}”?`)){ cats = cats.filter((_, k) => k !== i); await saveCats("Category deleted"); } }
+};
+
 /* ---------- Settings ---------- */
 $("#saveSettings").onclick = async () => {
   const wa = $("#sWa").value.replace(/\D/g, "");
   if(wa.length < 8) return ($("#sMsg").textContent = "Please enter a valid WhatsApp number with country code.");
   if(wa.startsWith("0")) return ($("#sMsg").textContent = "Start with the country code, not 0. Example: 2348012345678");
-  try { await K.fs.setDoc(K.fs.doc(K.db, "settings", "store"), { whatsapp:wa, name:$("#sName").value.trim() || "BusyHands", currency:$("#sCur").value.trim() || "₦" });
+  try { await K.fs.setDoc(K.fs.doc(K.db, "settings", "store"), { whatsapp:wa, name:$("#sName").value.trim() || "BusyHands", currency:$("#sCur").value.trim() || "₦" }, { merge:true });
     $("#sMsg").textContent = ""; $("#sWa").value = wa; toast("Settings saved ✔"); await loadSettings(); renderProducts(); renderOrders();
   } catch(err){ $("#sMsg").textContent = "Couldn't save: " + (err.code || err.message); }
 };

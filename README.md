@@ -13,9 +13,9 @@ Made by **Gpraise ❤️‍🔥**
 - **3D Customizer:** customers drag the product around, type a name, pick yarn colour, lettering style, position, size and a design note
 - **Checkout on WhatsApp** with every detail in the message
 - The design is also **saved to Admin** (Orders tab) so the seller can open it and knit exactly that
-- **Admin page** (🔐 button on the site): add / edit / delete products, price, WhatsApp number, orders
+- **Admin page** (🔐 button on the site, email + password login): add / edit / delete products, **your own categories**, price, WhatsApp number, orders
 - **Auto image compressor:** photos are cropped square and shrunk to about 80 KB before saving, so storage lasts long
-- Until the seller adds products, sample products are shown
+- No sample products or fixed categories: everything you see is added by the seller in Admin
 
 ## 📁 Files
 | File | What it does |
@@ -25,10 +25,9 @@ Made by **Gpraise ❤️‍🔥**
 | `script.js` | Store logic, 3D customizer, bag, WhatsApp checkout |
 | `admin.html`, `admin.css`, `admin.js` | Seller dashboard |
 | `design.js` | Yarn colours / fonts shared by store and admin |
-| `firebase.js` | Firebase settings and admin email |
+| `firebase.js` | Firebase settings |
 | `firestore.rules` | **Security rules (paste into Firebase)** |
 | `storage.rules` | Locks Firebase Storage (not used) |
-| `assets/` | Sample product art and logo |
 
 ---
 
@@ -36,40 +35,42 @@ Made by **Gpraise ❤️‍🔥**
 
 Open https://console.firebase.google.com and choose project **e-commerce-239b9**.
 
-**1. Turn on Google login**
-`Build > Authentication > Get started > Sign-in method > Google > Enable > Save`
+**1. Turn on email/password login**
+`Build > Authentication > Get started > Sign-in method > Email/Password > Enable > Save`
 
-**2. Allow your website domain**
-`Authentication > Settings > Authorized domains > Add domain`
-Add your live domain, e.g. `yourname.github.io` or `yourstore.vercel.app`. (`localhost` is already there.)
+**2. Create the admin account and allow your domain**
+- `Authentication > Users > Add user` → type the shop owner's email and a strong password → Add. Copy the **User UID** shown in that row.
+- `Authentication > Settings > Authorized domains > Add domain` → add your live domain, e.g. `yourname.github.io` or `yourstore.vercel.app`. (`localhost` is already there.)
 
 **3. Create the database**
 `Build > Firestore Database > Create database` (choose any location, start in production mode).
 
 **4. Paste the security rules**
-`Firestore Database > Rules` → delete everything → paste the content of **`firestore.rules`** → **Publish**.
+Open `firestore.rules`, replace `PASTE_ADMIN_UID_HERE` with the User UID you copied. Then `Firestore Database > Rules` → delete everything → paste the file → **Publish**.
 
 What the rules do:
-- Only **gamerpraisemoder@gmail.com** (verified Google account) can add/edit/delete products, change settings, and read orders
-- Everyone can see products and the store settings
+- Only the **admin account (your UID)** can add/edit/delete products, categories, settings, and read orders
+- Everyone can see products, categories and the store settings
 - Customers can only *create* an order. They can never read, change or delete anything
+- Other people creating accounts with the public key gets them nothing: the rules only trust your UID
 
 > The `apiKey` in `firebase.js` is **meant to be public**. Firebase protects your data with the rules above, not by hiding the key.
 
 **Why no Firebase Storage?** Photos are compressed in the browser and stored inside Firestore (about 80 KB each), so you don't need Storage or a paid plan.
 
-To use a different admin email, change it in **two places**: `ADMIN_EMAIL` in `firebase.js` and the email in `firestore.rules`.
+To change the admin, put the new account's UID in `firestore.rules` and publish again.
 
 ---
 
 ## 👩‍🎨 Seller Guide (Admin)
 
 1. On the website tap **🔐 Admin** (top of the page or the footer)
-2. **Sign in with Google** using the admin email
+2. **Sign in** with the admin email and password (use **Forgot password?** to reset it by email)
 3. **Settings tab:** type the **WhatsApp number** with country code and no `+` or `0` at the start (`2348012345678`), shop name and currency → Save
-4. **Products tab:** choose a photo, add name, category, price → Save. The photo compresses automatically.
+4. **Categories tab:** add the categories you sell (icon, name, short text). They appear on the shop and in the product form. You can reorder or delete them anytime.
+5. **Products tab:** choose a photo, add name, pick a category, price → Save. The photo compresses automatically.
    Untick "Customers can add a name" for items that can't be personalised
-5. **Orders tab:** when a customer taps checkout, their design appears with a picture showing the name on the product, yarn colour, style, position, size and notes. Knit it, then tap **✔ Mark done**.
+6. **Orders tab:** when a customer taps checkout, their design appears with a picture showing the name on the product, yarn colour, style, position, size and notes. Knit it, then tap **✔ Mark done**.
    The WhatsApp message includes the same order code (like `BH-AB12CD`).
 
 **Photo tips:** clear, bright photo, the garment centered on a plain background. It is cropped to a square.

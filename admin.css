@@ -52,3 +52,12 @@ input[type=checkbox]{width:auto;margin:0 8px 0 0;accent-color:var(--pink)}.check
 .toast{position:fixed;bottom:80px;left:50%;translate:-50% 12px;background:var(--ink);color:#fff;padding:11px 20px;border-radius:14px;opacity:0;transition:.3s;pointer-events:none;z-index:50}
 .toast.show{opacity:1;translate:-50% 0}
 @media(max-width:560px){.two{grid-template-columns:1fr}.who span{display:none}.oi .dz{width:92px}}
+
+.brand .lg,.login-card .lg{flex:none}
+.login-card .lg{width:64px;height:64px}.brand .lg{width:34px;height:34px}
+.login-card form{display:flex;flex-direction:column;gap:12px;width:100%;text-align:left}
+.linkbtn{background:none;border:0;color:var(--pink-dark,#c9285d);font:inherit;font-size:.85rem;cursor:pointer;text-decoration:underline;padding:4px}
+.catrow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px dashed #f3c6d6}
+.catrow .ci-ico{font-size:1.6rem;width:36px;text-align:center}
+.catrow .ci-t{flex:1;min-width:0}.catrow .ci-t b{display:block}.catrow .ci-t span{font-size:.8rem;color:var(--muted)}
+.three{display:grid;grid-template-columns:70px 1fr;gap:12px}

@@ -4,53 +4,40 @@ import { COLORS, FONTS, POS, esc, defaultCustom, yarnStyle, designHTML, describe
 /* ===========================================
    DEFAULT SETTINGS (the seller changes these in the Admin page)
 =========================================== */
-const STORE = { name: "BusyHands", whatsapp: "2348057940822", currency: "₦" };
+const STORE = { name: "BusyHands", whatsapp: "2348057940822", currency: "₦" };   // fallback until the seller saves settings in Admin
 const GPRAISE = "2348057940822";   // watermark contact (don't remove)
-
-/* Sample products – shown until the seller uploads her own in Admin */
-const SAMPLES = [
-  { id:"s1", name:"Cloud Knit Sweater",   cat:"Sweaters",      price:18000, old:22000, img:"assets/sweater-cloud.svg", tag:"Best seller", custom:true },
-  { id:"s2", name:"Name Sweater",         cat:"Sweaters",      price:20000, old:0,     img:"assets/sweater-name.svg",  tag:"Your name", custom:true },
-  { id:"s3", name:"Rosy Knit Dress",      cat:"Dresses",       price:25000, old:0,     img:"assets/dress.svg",         tag:"New",       custom:true },
-  { id:"s4", name:"Cozy Mittens",         cat:"Gloves",        price:6000,  old:8000,  img:"assets/mittens.svg",       tag:"-25%",      custom:true },
-  { id:"s5", name:"Lilac Knit Shorts",    cat:"Shorts",        price:12000, old:0,     img:"assets/shorts.svg",        tag:"Summer",    custom:true },
-  { id:"s6", name:"Bobble Beanie",        cat:"Hats & Scarves",price:7000,  old:0,     img:"assets/beanie.svg",        tag:"Cozy",      custom:true },
-  { id:"s7", name:"Button Cardigan",      cat:"Sweaters",      price:22000, old:27000, img:"assets/cardigan.svg",      tag:"Hot",       custom:true },
-  { id:"s8", name:"Blush Chunky Scarf",   cat:"Hats & Scarves",price:9000,  old:0,     img:"assets/scarf.svg",         tag:"Gift",      custom:false }
-];
-export const CATEGORIES = [
-  { name:"Sweaters", icon:"🧥", text:"Cardigans & jumpers" },
-  { name:"Dresses", icon:"👗", text:"Knitted dresses" },
-  { name:"Gloves", icon:"🧤", text:"Mittens & gloves" },
-  { name:"Shorts", icon:"🩳", text:"Soft knit shorts" },
-  { name:"Hats & Scarves", icon:"🧣", text:"Beanies & scarves" }
-];
 
 /* ===========================================
    CODE BELOW – only edit if you know JS
 =========================================== */
 const $ = s => document.querySelector(s);
 const money = n => STORE.currency + Number(n).toLocaleString();
-let PRODUCTS = [...SAMPLES], cart = [], filter = "All";
+let PRODUCTS = [], CATEGORIES = [], loaded = false, cart = [], filter = "All";
 const byId = id => PRODUCTS.find(p => String(p.id) === String(id));
 
 /* ---------- Load seller's settings + products from Firebase ---------- */
 async function loadRemote(){
-  const k = await fbDB(); if(!k) return;
+  const k = await fbDB(); if(!k){ loaded = true; renderAll(); return; }
   const { db, fs } = k;
   try {
     const [ps, st] = await Promise.all([fs.getDocs(fs.collection(db, "products")), fs.getDoc(fs.doc(db, "settings", "store"))]);
-    if(st.exists()){ const s = st.data(); if(s.whatsapp) STORE.whatsapp = s.whatsapp; if(s.name) STORE.name = s.name; if(s.currency) STORE.currency = s.currency; }
+    if(st.exists()){ const s = st.data(); if(s.whatsapp) STORE.whatsapp = s.whatsapp; if(s.name) STORE.name = s.name; if(s.currency) STORE.currency = s.currency;
+      if(Array.isArray(s.categories)) CATEGORIES = s.categories.filter(c => c && c.name); }
     const list = ps.docs.map(d => ({ id:d.id, ...d.data(), img:d.data().image })).filter(p => p.img && p.name);
-    if(list.length){ list.sort((a,b) => (a.ts||0) - (b.ts||0)); PRODUCTS = list; }
-  } catch(e){ console.warn("Using sample products:", e); }
-  renderAll();
+    list.sort((a,b) => (a.ts||0) - (b.ts||0)); PRODUCTS = list;
+  } catch(e){ console.warn("Couldn't load the shop:", e); }
+  loaded = true; document.title = `${STORE.name} – Handmade Knits With Your Name On Them`; renderAll();
 }
 
 /* ---------- Render ---------- */
 function renderCats(){
+  const has = CATEGORIES.length > 0;
+  $("#categories").classList.toggle("hidden", !has);
+  document.querySelectorAll('a[href="#categories"]').forEach(l => l.classList.toggle("hidden", !has));
   $("#catGrid").innerHTML = CATEGORIES.map(c =>
-    `<div class="cat tilt" data-reveal data-cat="${esc(c.name)}"><span class="ico">${c.icon}</span><h3>${esc(c.name)}</h3><p>${esc(c.text)}</p></div>`).join("");
+    `<div class="cat tilt" data-reveal data-cat="${esc(c.name)}"><span class="ico">${esc(c.icon || "🧶")}</span><h3>${esc(c.name)}</h3><p>${esc(c.text || "")}</p></div>`).join("");
+  if(filter !== "All" && !CATEGORIES.some(c => c.name === filter)) filter = "All";
+  $("#chips").classList.toggle("hidden", !has);
   $("#chips").innerHTML = ["All", ...CATEGORIES.map(c => c.name)].map(n =>
     `<button class="chip ${n===filter?"on":""}" data-f="${esc(n)}">${esc(n)}</button>`).join("");
 }
@@ -69,13 +56,17 @@ function renderProducts(){
           <button class="add" data-add="${esc(p.id)}" aria-label="Quick add ${esc(p.name)}">+</button>
         </div>
       </div>
-    </article>`).join("") : `<p class="empty" style="grid-column:1/-1">Nothing here yet – coming soon!</p>`;
+    </article>`).join("") : `<p class="empty" style="grid-column:1/-1">${loaded ? "Nothing here yet – coming soon! 🧶" : "Loading the shop… 🧶"}</p>`;
   initEffects();
 }
 function renderAll(){
+  $("#shopName").textContent = STORE.name;
   renderCats(); renderProducts(); renderRing(); renderBox(); renderCart();
-  $("#dealPrice").innerHTML = (() => { const t = ["s1","s4","s6"].map(byId).filter(Boolean); const set = PRODUCTS.slice(0,3);
-    const sum = set.reduce((a,p) => a + Number(p.price), 0); return `<s>${money(sum)}</s> <b>${money(Math.round(sum*.9/100)*100)}</b>`; })();
+  const deal = PRODUCTS.length >= 3;
+  $("#spin").classList.toggle("hidden", !deal);
+  document.querySelectorAll('a[href="#spin"]').forEach(l => l.classList.toggle("hidden", !deal));
+  if(deal){ const set = PRODUCTS.slice(0,3), sum = set.reduce((a,p) => a + Number(p.price), 0);
+    $("#dealPrice").innerHTML = `<s>${money(sum)}</s> <b>${money(Math.round(sum*.9/100)*100)}</b>`; }
   initEffects();
 }
 
@@ -83,7 +74,7 @@ function renderAll(){
 const ring = $("#ring");
 let ringN = 6;
 function renderRing(){
-  const items = PRODUCTS.slice(0, 6); ringN = items.length || 1;
+  const items = PRODUCTS.slice(0, 6); ringN = items.length || 1; $("#scene").classList.toggle("hidden", !items.length);
   ring.innerHTML = items.map(p => `<div class="rc"><img src="${esc(p.img)}" alt="${esc(p.name)}"><h4>${esc(p.name)}</h4><span>${money(p.price)}</span></div>`).join("");
   placeRing();
 }

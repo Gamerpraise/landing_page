@@ -1,5 +1,5 @@
 /* Firebase loader. Loads from Google's CDN only when needed.
-   If Firebase can't load (offline / not set up yet), the store still works with sample products. */
+   If Firebase can't load (offline / not set up yet), the shop simply shows no products. */
 const V = "10.12.2", B = `https://www.gstatic.com/firebasejs/${V}/`;
 export const firebaseConfig = {
   apiKey: "AIzaSyBcvt5pN7GPsxyV97k7Ed5ojKXHFhRrfZk",
@@ -10,7 +10,6 @@ export const firebaseConfig = {
   appId: "1:1045719865464:web:72514219651e245806758d",
   measurementId: "G-KP9WB4Z5XY"
 };
-export const ADMIN_EMAIL = "gamerpraisemoder@gmail.com";   // the ONLY person allowed into admin (also enforced in firestore.rules)
 
 let dbP, authP;
 export function fbDB(){

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
 <title>BusyHands Admin</title>
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2718%27 fill=%27%23e0457b%27/%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2716%27 fill=%27%23fff%27/%3E%3C/svg%3E" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fraunces:wght@600;800&family=Fredoka:wght@500;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="design.css">
 <link rel="stylesheet" href="admin.css">
@@ -15,10 +15,15 @@
 <!-- LOGIN -->
 <section id="login" class="center">
   <div class="card login-card">
-    <img src="assets/logo.svg" alt="" width="64" height="64">
+    <svg class="lg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a9c"/><stop offset="1" stop-color="#c9285d"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lgg)"/><circle cx="32" cy="32" r="16" fill="#fff"/><path d="M19 28q13 8 26 0M18 35q14 8 28 0M23 21q9 14 18 22M41 21q-9 14-18 22" stroke="#c9285d" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
     <h1>BusyHands Admin</h1>
-    <p class="muted">Seller area. Sign in with the shop owner's Google account.</p>
-    <button class="btn" id="googleBtn">Sign in with Google</button>
+    <p class="muted">Seller area. Sign in with your email and password.</p>
+    <form id="loginForm" autocomplete="on">
+      <label>Email <input id="lEmail" type="email" autocomplete="username" required placeholder="you@example.com"></label>
+      <label>Password <input id="lPass" type="password" autocomplete="current-password" required minlength="6" placeholder="Your password"></label>
+      <button class="btn" id="loginBtn" type="submit">Sign in</button>
+      <button class="linkbtn" id="forgotBtn" type="button">Forgot password?</button>
+    </form>
     <p class="err" id="loginErr"></p>
     <a class="back" href="index.html">← Back to shop</a>
   </div>
@@ -27,13 +32,14 @@
 <!-- APP -->
 <div id="app" class="hidden">
   <header class="top">
-    <a href="index.html" class="brand"><img src="assets/logo.svg" alt="" width="34" height="34"><b>BusyHands Admin</b></a>
+    <a href="index.html" class="brand"><svg class="lg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a9c"/><stop offset="1" stop-color="#c9285d"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lgg)"/><circle cx="32" cy="32" r="16" fill="#fff"/><path d="M19 28q13 8 26 0M18 35q14 8 28 0M23 21q9 14 18 22M41 21q-9 14-18 22" stroke="#c9285d" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><b>BusyHands Admin</b></a>
     <div class="who"><span id="who"></span><button class="mini" id="signOut">Sign out</button></div>
   </header>
 
   <nav class="tabs">
     <button class="tab on" data-tab="orders">🧶 Orders <i id="newBadge" class="badge hidden">0</i></button>
     <button class="tab" data-tab="products">🛍️ Products</button>
+    <button class="tab" data-tab="categories">🏷️ Categories</button>
     <button class="tab" data-tab="settings">⚙️ Settings</button>
   </nav>
 
@@ -75,6 +81,23 @@
       </div>
       <h2>Your products <span class="muted small" id="pCount"></span></h2>
       <div id="plist" class="plist"></div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section id="tab-categories" class="hidden">
+      <div class="card">
+        <h2>Add a category</h2>
+        <p class="small muted">These show on your shop as “Shop by category” and as filter buttons. Add the kinds of things you sell.</p>
+        <div class="three">
+          <label>Icon <input id="cIcon" maxlength="4" placeholder="🧥"></label>
+          <label>Name <input id="cName" maxlength="24" placeholder="e.g. Sweaters"></label>
+        </div>
+        <label>Short description (optional) <input id="cText" maxlength="40" placeholder="e.g. Cardigans &amp; jumpers"></label>
+        <button class="btn" id="addCat">Add category</button>
+        <p class="msg" id="cMsg"></p>
+      </div>
+      <h2>Your categories <span class="muted small" id="cCount"></span></h2>
+      <div class="card" id="catList"></div>
     </section>
 
     <!-- SETTINGS -->

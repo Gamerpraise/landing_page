@@ -2,11 +2,12 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Only the shop owner (Google sign-in, verified email) is admin
+    // Only the shop owner's account is admin. Paste the owner's User UID below
+    // (Firebase console > Authentication > Users > copy "User UID").
+    // The admin page also shows your UID if you sign in before it is set.
     function isAdmin() {
       return request.auth != null
-        && request.auth.token.email == 'gamerpraisemoder@gmail.com'
-        && request.auth.token.email_verified == true;
+        && request.auth.uid == 'PASTE_ADMIN_UID_HERE';
     }
 
     // Everyone can SEE products & store settings. Only admin can change them.
