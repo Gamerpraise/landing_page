@@ -1,0 +1,10 @@
+// Images are compressed in the browser and saved inside Firestore, so Firebase Storage is NOT used.
+// Keep it locked just in case.
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

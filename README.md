@@ -1,153 +1,122 @@
-# 🛍️ Velora Market – 3D Shopping Landing Page
+# 🧶 BusyHands – 3D Knitwear Store with Name Customizer
 
-A beautiful **3D online store template** built with plain **HTML, CSS & JavaScript**. No framework, no install, no Three.js. Made for business owners who want to show and sell products like **hair, clothes, shoes, bags, beauty and accessories**.
+A pink, girly **3D online store** for a hand-knitting business. Customers spin products in 3D, **add their name in yarn**, and send the order to the seller on **WhatsApp**. The seller opens the **Admin page** to upload products and see the exact design each customer picked.
 
-Created by **Gpraise**
+Plain **HTML, CSS & JavaScript** + **Firebase**. No build step.
+
+Made by **Gpraise ❤️‍🔥**
 
 ---
 
-## ✨ What You Get
-- 3D spinning product ring (drag it with your finger or mouse)
-- 3D tilt cards for categories and products
-- Drag-to-spin 3D gift box deal section
-- Shopping bag (cart) with **WhatsApp checkout**
-- Category filters, reviews, seller section, mobile-friendly layout
+## ✨ Features
+- 3D spinning product ring, tilt cards, drag-to-spin gift box
+- **3D Customizer:** customers drag the product around, type a name, pick yarn colour, lettering style, position, size and a design note
+- **Checkout on WhatsApp** with every detail in the message
+- The design is also **saved to Admin** (Orders tab) so the seller can open it and knit exactly that
+- **Admin page** (🔐 button on the site): add / edit / delete products, price, WhatsApp number, orders
+- **Auto image compressor:** photos are cropped square and shrunk to about 80 KB before saving, so storage lasts long
+- Until the seller adds products, sample products are shown
 
 ## 📁 Files
 | File | What it does |
 |---|---|
-| `index.html` | Page structure and text |
-| `style.css` | Colors, 3D effects, layout |
-| `script.js` | **Store settings, products**, cart and 3D animations |
-| `assets/` | Product images and logo (SVG) |
+| `index.html` | The store |
+| `style.css`, `design.css` | Looks, 3D effects |
+| `script.js` | Store logic, 3D customizer, bag, WhatsApp checkout |
+| `admin.html`, `admin.css`, `admin.js` | Seller dashboard |
+| `design.js` | Yarn colours / fonts shared by store and admin |
+| `firebase.js` | Firebase settings and admin email |
+| `firestore.rules` | **Security rules (paste into Firebase)** |
+| `storage.rules` | Locks Firebase Storage (not used) |
+| `assets/` | Sample product art and logo |
 
 ---
 
-## 📲 How To Edit On Your Phone (EASY METHOD)
+## 🔥 Firebase Setup (do this once, ~5 minutes)
 
-You don't need a laptop.
+Open https://console.firebase.google.com and choose project **e-commerce-239b9**.
 
-**Step 1: Download this template**
-1. On this GitHub page click the green `Code` button > `Download ZIP`
-2. Open your file manager and unzip it.
+**1. Turn on Google login**
+`Build > Authentication > Get started > Sign-in method > Google > Enable > Save`
 
-**Step 2: Open the GP Code editor**
-Use the free online code editor here: **https://gpcode-eta.vercel.app/**
+**2. Allow your website domain**
+`Authentication > Settings > Authorized domains > Add domain`
+Add your live domain, e.g. `yourname.github.io` or `yourstore.vercel.app`. (`localhost` is already there.)
 
-**Step 3: Import your project**
-1. Open https://gpcode-eta.vercel.app/ in your phone browser
-2. Open / import the unzipped `landing_page` folder (or its files)
-3. Edit `index.html`, `style.css` and `script.js`, then preview your changes
+**3. Create the database**
+`Build > Firestore Database > Create database` (choose any location, start in production mode).
+
+**4. Paste the security rules**
+`Firestore Database > Rules` → delete everything → paste the content of **`firestore.rules`** → **Publish**.
+
+What the rules do:
+- Only **gamerpraisemoder@gmail.com** (verified Google account) can add/edit/delete products, change settings, and read orders
+- Everyone can see products and the store settings
+- Customers can only *create* an order. They can never read, change or delete anything
+
+> The `apiKey` in `firebase.js` is **meant to be public**. Firebase protects your data with the rules above, not by hiding the key.
+
+**Why no Firebase Storage?** Photos are compressed in the browser and stored inside Firestore (about 80 KB each), so you don't need Storage or a paid plan.
+
+To use a different admin email, change it in **two places**: `ADMIN_EMAIL` in `firebase.js` and the email in `firestore.rules`.
 
 ---
 
-## 💻 METHOD 2: Termux (For Tech Guys)
+## 👩‍🎨 Seller Guide (Admin)
 
-1. Install Termux from F-Droid (not Play Store)
-2. Run these one by one:
+1. On the website tap **🔐 Admin** (top of the page or the footer)
+2. **Sign in with Google** using the admin email
+3. **Settings tab:** type the **WhatsApp number** with country code and no `+` or `0` at the start (`2348012345678`), shop name and currency → Save
+4. **Products tab:** choose a photo, add name, category, price → Save. The photo compresses automatically.
+   Untick "Customers can add a name" for items that can't be personalised
+5. **Orders tab:** when a customer taps checkout, their design appears with a picture showing the name on the product, yarn colour, style, position, size and notes. Knit it, then tap **✔ Mark done**.
+   The WhatsApp message includes the same order code (like `BH-AB12CD`).
 
+**Photo tips:** clear, bright photo, the garment centered on a plain background. It is cropped to a square.
+
+### How the "3D" works for uploaded photos
+Your photo becomes a **3D knit swatch card** that customers can drag and turn. It has thickness and a back side, and the customer's name floats above the product like real stitching. It's a photo-based 3D look. A full 3D model of every garment would need 3D scanning.
+
+---
+
+## 📲 How To Edit The Code On Your Phone
+
+1. On GitHub click the green `Code` button > `Download ZIP` and unzip it
+2. Open the code editor: **https://gpcode-eta.vercel.app/**
+3. Open the `landing_page` folder, edit `index.html`, `style.css` or `script.js`
+
+Termux (optional):
 ```bash
 pkg update && pkg upgrade -y
 pkg install git -y
 git clone https://github.com/Gamerpraise/landing_page.git
 cd landing_page
-ls
+git add . && git commit -m "updated" && git push
 ```
 
-3. Open the files in the GP Code editor: https://gpcode-eta.vercel.app/
-4. To push changes back to GitHub (optional):
-
-```bash
-git add .
-git commit -m "updated store"
-git push
-```
-
----
-
-## 🛒 How To Make It YOUR Store
-
-### 1. Your WhatsApp number, name & currency
-Open `script.js`. At the very top you will see:
-
-```js
-const STORE = {
-  name: "Velora Market",
-  whatsapp: "2348057940822",   // country code, no + or spaces
-  currency: "$"                // or "₦"
-};
-```
-Change them. Every order from the cart goes to **your** WhatsApp.
-
-### 2. Add, edit or remove products
-Still in `script.js`, find `const PRODUCTS = [ ... ]`. One line = one product:
-
-```js
-{ id:9, name:"Curly Wig", cat:"Hair", price:120, old:150, img:"assets/wig.jpg", tag:"New" },
-```
-- `id` must be a unique number
-- `cat` must match a category: Hair, Clothes, Shoes, Bags, Beauty, Accessories
-- `old` is the crossed-out price (use `0` for none)
-- `tag` is the small label on the card
-
-### 3. Use your own product photos
-1. Put your photos inside the `assets/` folder (`.jpg`, `.png`, `.webp` or `.svg`)
-2. Set the `img:` path of that product, e.g. `img:"assets/wig.jpg"`
-3. Use **square photos** (800×800px) for best results
-4. Replace `assets/logo.svg` and `assets/favicon.svg` with your own logo (keep the same names)
-
-### 4. Change categories
-In `script.js` edit `const CATEGORIES = [ ... ]` (name, emoji icon, short text).
-
-### 5. Change text
-Edit words directly in `index.html` (hero headline, reviews, the "Glow-Up Box" deal, footer).
-
-### 6. Change colors
-Open `style.css`. At the top, change the `:root` colors:
-
-```css
---bg:#fff8f3;   /* page background */
---pink:#ff5d8f; /* main brand color */
---ink:#2a1633;  /* dark text */
-```
-Want blue? Change `--pink` and `--pink-dark` to blue shades. Done.
-
-### 7. Make the 3D ring bigger or smaller
-In `style.css` change `--ring-r:270px;` (bigger number = wider ring).
-
----
-
-## 🎨 Change Design Without Coding (AI helper)
-Use https://zzzcode.ai/code-generator
-1. Type `CSS` (or `JavaScript`) in the first box
-2. Paste your whole `style.css` (or `script.js`)
-3. Type what you want, e.g. *"change the main color to blue"*
-4. Copy the result and paste it back in your file
+**Change colours:** top of `style.css` (`--pink`, `--bg`, `--ink`)
+**Change texts:** `index.html`
+**Yarn colours and fonts:** top of `design.js`
 
 ---
 
 ## 🚀 Host For FREE
-1. **GitHub Pages:** repo `Settings` > `Pages` > Branch `main` / `(root)` > Save
-2. **Netlify:** https://www.netlify.com – drag and drop the project folder
-3. **Vercel:** https://vercel.com – Add New Project > import your repo > Deploy
+Because the site uses ES modules + Firebase it must be **online** (not opened as a file).
+1. **GitHub Pages:** `Settings > Pages > Branch main > Save`
+2. **Netlify:** drag and drop the folder
+3. **Vercel:** import the repo and Deploy
 
-📱 Then share your live link on WhatsApp status, Instagram, TikTok and Facebook.
-
----
-
-## 🔮 Coming Soon
-- Seller / admin dashboard to upload products
-- Firebase login, database and image uploads
-- Buyer accounts and order tracking
+Then do step 2 of Firebase Setup with your new domain.
 
 ---
 
-## 📞 Need Help?
-Message **Gpraise** on WhatsApp:
+## 💼 This Store Is For Sale!
+Want a store like this (with admin, 3D customizer and WhatsApp orders) for your business?
+Contact **Gpraise** 👇
 
-<a href="https://wa.me/2348057940822?text=Hello%20Gpraise%2C%20please%20I%20need%20help%20with%20the%20Velora%20store%20template">
-  <img src="https://img.shields.io/badge/Chat%20on%20WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Chat on WhatsApp" />
+<a href="https://wa.me/2348057940822?text=Hello%20Gpraise%2C%20I%20want%20a%20store%20like%20BusyHands">
+  <img src="https://img.shields.io/badge/Chat%20Gpraise%20on%20WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp Gpraise" />
 </a>
 
 ---
-© 2026 Gpraise – Velora Market Template. All Rights Reserved.
+© 2026 BusyHands · Made by Gpraise ❤️‍🔥

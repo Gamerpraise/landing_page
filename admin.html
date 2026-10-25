@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>BusyHands Admin</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fraunces:wght@600;800&family=Fredoka:wght@500;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<section id="login" class="center">
+  <div class="card login-card">
+    <img src="assets/logo.svg" alt="" width="64" height="64">
+    <h1>BusyHands Admin</h1>
+    <p class="muted">Seller area. Sign in with the shop owner's Google account.</p>
+    <button class="btn" id="googleBtn">Sign in with Google</button>
+    <p class="err" id="loginErr"></p>
+    <a class="back" href="index.html">← Back to shop</a>
+  </div>
+</section>
+
+<!-- APP -->
+<div id="app" class="hidden">
+  <header class="top">
+    <a href="index.html" class="brand"><img src="assets/logo.svg" alt="" width="34" height="34"><b>BusyHands Admin</b></a>
+    <div class="who"><span id="who"></span><button class="mini" id="signOut">Sign out</button></div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab on" data-tab="orders">🧶 Orders <i id="newBadge" class="badge hidden">0</i></button>
+    <button class="tab" data-tab="products">🛍️ Products</button>
+    <button class="tab" data-tab="settings">⚙️ Settings</button>
+  </nav>
+
+  <main class="wrap">
+
+    <!-- ORDERS -->
+    <section id="tab-orders">
+      <div class="row between"><h2>Customer designs</h2><button class="mini" id="refresh">↻ Refresh</button></div>
+      <p class="muted small">When a customer taps checkout, their chosen design lands here. Open it, knit it exactly like this, then tap “Mark done”.</p>
+      <div id="orders"></div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="tab-products" class="hidden">
+      <div class="card">
+        <h2 id="formTitle">Add a product</h2>
+        <label>Product photo
+          <input type="file" id="pFile" accept="image/*">
+        </label>
+        <div class="pv-row">
+          <div class="pv" id="pv">No photo yet</div>
+          <p class="small muted" id="pvInfo">Photos are automatically cropped to a square and compressed (about 60–90 KB) so you never run out of storage. Use clear, bright photos on a plain background.</p>
+        </div>
+        <label>Name <input id="pName" maxlength="60" placeholder="e.g. Cloud Knit Sweater"></label>
+        <div class="two">
+          <label>Category <select id="pCat"></select></label>
+          <label>Label (optional) <input id="pTag" maxlength="14" placeholder="New, Hot, -20%"></label>
+        </div>
+        <div class="two">
+          <label>Price <input id="pPrice" type="number" inputmode="numeric" min="0" placeholder="18000"></label>
+          <label>Old price (optional) <input id="pOld" type="number" inputmode="numeric" min="0" placeholder="22000"></label>
+        </div>
+        <label class="check"><input type="checkbox" id="pCustom" checked> Customers can add a name / design request</label>
+        <div class="row">
+          <button class="btn" id="saveProduct">Save product</button>
+          <button class="mini hidden" id="cancelEdit">Cancel edit</button>
+        </div>
+        <p class="msg" id="pMsg"></p>
+      </div>
+      <h2>Your products <span class="muted small" id="pCount"></span></h2>
+      <div id="plist" class="plist"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="tab-settings" class="hidden">
+      <div class="card">
+        <h2>Shop settings</h2>
+        <label>WhatsApp number (customers message this number)
+          <input id="sWa" inputmode="tel" placeholder="2348012345678">
+        </label>
+        <p class="small muted">Use the country code and no “+” or spaces. Example: Nigeria 0801 234 5678 → <b>2348012345678</b></p>
+        <label>Shop name <input id="sName" maxlength="40" placeholder="BusyHands"></label>
+        <label>Currency symbol <input id="sCur" maxlength="4" placeholder="₦"></label>
+        <button class="btn" id="saveSettings">Save settings</button>
+        <p class="msg" id="sMsg"></p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer class="wm">
+  <p>Made by <a href="https://wa.me/2348057940822" target="_blank" rel="noopener">Gpraise ❤️‍🔥</a></p>
+  <a class="forsale" target="_blank" rel="noopener" href="https://wa.me/2348057940822?text=Hello%20Gpraise%2C%20I%20saw%20the%20BusyHands%20store%20and%20I%20want%20a%20store%20like%20this">💼 This store is for sale – contact Gpraise</a>
+</footer>
+
+<div class="toast" id="toast"></div>
+<script type="module" src="admin.js"></script>
+</body>
+</html>

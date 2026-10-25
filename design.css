@@ -1,0 +1,9 @@
+/* Yarn-stitched text + flat design preview (used by store AND admin) */
+.dz{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;container-type:inline-size;background:#fff}
+.dz img{width:100%;height:100%;object-fit:cover;display:block}
+.yt{position:absolute;left:3%;right:3%;text-align:center;transform:translateY(-50%);white-space:nowrap;line-height:1.2;padding:.08em .1em;font-weight:700;
+  color:transparent;background-color:var(--yarn);
+  background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.38) 0 2px,transparent 2px 5px),repeating-linear-gradient(45deg,rgba(0,0,0,.14) 0 1px,transparent 1px 5px);
+  -webkit-background-clip:text;background-clip:text;
+  filter:drop-shadow(0 1px 0 rgba(0,0,0,.35)) drop-shadow(0 3px 3px rgba(0,0,0,.25));pointer-events:none}
+.dz .yt{font-size:calc(100cqw * var(--fs))}

@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Only the shop owner (Google sign-in, verified email) is admin
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == 'gamerpraisemoder@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    // Everyone can SEE products & store settings. Only admin can change them.
+    match /products/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Buyers can only CREATE an order (cannot read, edit or delete any). Only admin reads/manages.
+    match /orders/{id} {
+      allow read, update, delete: if isAdmin();
+      allow create: if request.resource.data.keys().hasOnly(
+            ['code','items','total','currency','customerName','customerPhone','status','createdAt'])
+        && request.resource.data.status == 'new'
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.items is list
+        && request.resource.data.items.size() > 0
+        && request.resource.data.items.size() <= 30
+        && request.resource.data.total is number
+        && request.resource.data.customerName is string && request.resource.data.customerName.size() <= 60
+        && request.resource.data.customerPhone is string && request.resource.data.customerPhone.size() <= 30
+        && request.resource.data.code is string && request.resource.data.code.size() <= 20;
+    }
+
+    // everything else is locked
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

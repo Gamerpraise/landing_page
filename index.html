@@ -3,33 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Velora Market – Hair, Fashion & Beauty You'll Love</title>
-<meta name="description" content="Shop hair, clothes, shoes, bags and beauty in one beautiful 3D store. Order fast on WhatsApp.">
+<title>BusyHands – Handmade Knits With Your Name On Them</title>
+<meta name="description" content="Hand-knitted dresses, sweaters, gloves and shorts. Customize with your name and order on WhatsApp.">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fraunces:wght@600;800&family=Fredoka:wght@500;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="design.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- HEADER -->
 <header class="header">
   <div class="container nav">
-    <a href="#top" class="logo"><img src="assets/logo.svg" alt="Velora logo"><span>Velora</span></a>
+    <a href="#top" class="logo"><img src="assets/logo.svg" alt="BusyHands logo"><span>BusyHands</span></a>
     <nav class="links">
       <a href="#categories">Shop</a>
       <a href="#products">Trending</a>
-      <a href="#spin">Deals</a>
-      <a href="#sell">Sell</a>
+      <a href="#spin">Cozy Set</a>
+      <a href="#how">How it works</a>
     </nav>
-    <button class="cart-btn" id="openCart" aria-label="Open cart">🛍️ <b id="cartCount">0</b></button>
+    <div class="nav-actions">
+      <a href="admin.html" class="admin-btn" title="Seller login">🔐 <span>Admin</span></a>
+      <button class="cart-btn" id="openCart" aria-label="Open bag">🧶 <b id="cartCount">0</b></button>
+    </div>
   </div>
 </header>
 
 <main id="top">
 
-<!-- HERO -->
 <section class="hero">
   <div class="float-shapes" aria-hidden="true">
     <div class="cube c1"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -38,17 +40,17 @@
   </div>
   <div class="container hero-grid">
     <div class="hero-text">
-      <span class="badge">✨ New season is here</span>
-      <h1>Shop the look.<br><em>Fall in love</em> with it.</h1>
-      <p>Hair, fashion, shoes and beauty from trusted sellers — all in one place. Pick it, tap it, get it delivered.</p>
+      <span class="badge">🧶 Handmade with love</span>
+      <h1>Cozy knits, <em>stitched</em> with your name.</h1>
+      <p>Hand-knitted dresses, sweaters, gloves and shorts. Pick your piece, choose your yarn and we'll knit your name right into it.</p>
       <div class="hero-buttons">
-        <a href="#products" class="btn">Start Shopping</a>
-        <a href="#categories" class="btn-outline">Browse Categories</a>
+        <a href="#products" class="btn">Shop Knits</a>
+        <a href="#how" class="btn-outline">How it works</a>
       </div>
       <ul class="hero-stats">
-        <li><b>2k+</b><span>Happy buyers</span></li>
-        <li><b>4.9★</b><span>Avg rating</span></li>
-        <li><b>24h</b><span>Fast dispatch</span></li>
+        <li><b>100%</b><span>Handmade</span></li>
+        <li><b>Your</b><span>Name stitched</span></li>
+        <li><b>Made</b><span>Just for you</span></li>
       </ul>
     </div>
     <div class="scene" id="scene">
@@ -58,38 +60,28 @@
   </div>
 </section>
 
-<!-- TRUST MARQUEE -->
 <div class="marquee" aria-hidden="true">
   <div class="track">
-    <span>🚚 Fast delivery</span><span>💳 Secure payment</span><span>↩️ Easy returns</span><span>💬 WhatsApp support</span><span>🌟 Verified sellers</span>
-    <span>🚚 Fast delivery</span><span>💳 Secure payment</span><span>↩️ Easy returns</span><span>💬 WhatsApp support</span><span>🌟 Verified sellers</span>
+    <span>🧶 Handmade with love</span><span>✍️ Your name stitched in</span><span>💬 Order on WhatsApp</span><span>🎁 Gift ready</span><span>📦 Delivery available</span>
+    <span>🧶 Handmade with love</span><span>✍️ Your name stitched in</span><span>💬 Order on WhatsApp</span><span>🎁 Gift ready</span><span>📦 Delivery available</span>
   </div>
 </div>
 
-<!-- CATEGORIES -->
 <section id="categories" class="section">
   <div class="container">
-    <div class="section-title">
-      <h2>Shop by category</h2>
-      <p>Everything you need to look and feel amazing.</p>
-    </div>
+    <div class="section-title"><h2>Shop by category</h2><p>Everything is knitted by hand, one stitch at a time.</p></div>
     <div class="cat-grid" id="catGrid"></div>
   </div>
 </section>
 
-<!-- PRODUCTS -->
 <section id="products" class="section alt">
   <div class="container">
-    <div class="section-title">
-      <h2>Trending right now</h2>
-      <p>Tap a card, add to bag, checkout on WhatsApp.</p>
-    </div>
+    <div class="section-title"><h2>Trending knits</h2><p>Tap “Customize” to see it in 3D with your name on it.</p></div>
     <div class="chips" id="chips"></div>
     <div class="product-grid" id="productGrid"></div>
   </div>
 </section>
 
-<!-- 3D SPIN BOX -->
 <section id="spin" class="section">
   <div class="container spin-grid">
     <div class="spin-stage" id="boxStage">
@@ -97,46 +89,43 @@
       <p class="hint">Drag the box 👆</p>
     </div>
     <div>
-      <span class="badge">🎁 Weekend deal</span>
-      <h2 class="big">The Glow-Up Box</h2>
-      <p class="muted">One box. A hair bundle, a fresh outfit and a signature scent — wrapped and delivered. Save 20% when you order the full set.</p>
-      <div class="deal-price"><s>$180</s> <b>$144</b></div>
-      <a href="#" class="btn" id="dealBtn">Order the box</a>
+      <span class="badge">🎁 Gift favourite</span>
+      <h2 class="big">The Cozy Set</h2>
+      <p class="muted">A sweater, mittens and a bobble beanie, all knitted to match and wrapped like a gift. Add a name to each piece for a gift she'll never forget.</p>
+      <div class="deal-price" id="dealPrice"></div>
+      <a href="#" class="btn" id="dealBtn">Order the set</a>
     </div>
   </div>
 </section>
 
-<!-- WHY -->
-<section class="section alt">
+<section id="how" class="section alt">
   <div class="container">
-    <div class="section-title"><h2>Why people love shopping here</h2></div>
+    <div class="section-title"><h2>How it works</h2></div>
     <div class="why-grid">
-      <div class="tilt why"><span>🚚</span><h3>Fast delivery</h3><p>Orders leave the shop within 24 hours.</p></div>
-      <div class="tilt why"><span>✅</span><h3>Verified sellers</h3><p>Real shops. Real products. No stories.</p></div>
-      <div class="tilt why"><span>💬</span><h3>Chat to order</h3><p>Talk to the seller directly on WhatsApp.</p></div>
-      <div class="tilt why"><span>↩️</span><h3>Easy returns</h3><p>Not right? Swap or return, no wahala.</p></div>
+      <div class="tilt why"><span>👗</span><h3>1. Pick a piece</h3><p>Choose a knit you love.</p></div>
+      <div class="tilt why"><span>✨</span><h3>2. Make it yours</h3><p>Spin it in 3D, add a name, pick yarn and style.</p></div>
+      <div class="tilt why"><span>💬</span><h3>3. Send on WhatsApp</h3><p>Your design goes straight to the knitter.</p></div>
+      <div class="tilt why"><span>🧶</span><h3>4. We knit it</h3><p>Made by hand, exactly how you designed it.</p></div>
     </div>
   </div>
 </section>
 
-<!-- REVIEWS -->
 <section class="section">
   <div class="container">
-    <div class="section-title"><h2>Loved by buyers</h2></div>
+    <div class="section-title"><h2>Loved by our girls</h2></div>
     <div class="why-grid three">
-      <div class="tilt review"><div class="stars">★★★★★</div><p>“The bundle came soft and full, exactly like the photo. Already ordered again!”</p><b>— Amara O.</b></div>
-      <div class="tilt review"><div class="stars">★★★★★</div><p>“Smooth ordering on WhatsApp and my dress arrived in two days.”</p><b>— Tola A.</b></div>
-      <div class="tilt review"><div class="stars">★★★★★</div><p>“Best sneakers I've bought online. The site is so pretty too.”</p><b>— Chidi M.</b></div>
+      <div class="tilt review"><div class="stars">★★★★★</div><p>“My daughter's name on her little sweater. She won't take it off!”</p><b>— Amara O.</b></div>
+      <div class="tilt review"><div class="stars">★★★★★</div><p>“So soft and the stitching is perfect. Ordering on WhatsApp was easy.”</p><b>— Tola A.</b></div>
+      <div class="tilt review"><div class="stars">★★★★★</div><p>“Got matching mittens for my sisters. Everyone asked where I got them.”</p><b>— Chioma M.</b></div>
     </div>
   </div>
 </section>
 
-<!-- SELLER CTA -->
-<section id="sell" class="cta">
+<section class="cta">
   <div class="container">
-    <h2>Own a business? Sell here.</h2>
-    <p>Get your own beautiful 3D store and start reaching buyers today.</p>
-    <a href="#" class="btn btn-light" data-wa="Hello, I want a store like Velora for my business">Get my store</a>
+    <h2>Made just for you</h2>
+    <p>Tell us the name, the colour, the vibe. We'll knit it.</p>
+    <a href="#products" class="btn btn-light">Start customizing</a>
   </div>
 </section>
 
@@ -144,25 +133,58 @@
 
 <footer>
   <div class="container foot">
-    <p>© 2026 Velora Market. All rights reserved.</p>
-    <p>Made with ♥ by <a href="https://wa.me/2348057940822" target="_blank" rel="noopener">Gpraise</a></p>
+    <p>© 2026 BusyHands. All rights reserved.</p>
+    <p><a href="admin.html">🔐 Seller login</a></p>
+  </div>
+  <div class="container watermark">
+    <p>Made by <a href="https://wa.me/2348057940822" target="_blank" rel="noopener">Gpraise ❤️‍🔥</a></p>
+    <a class="forsale" target="_blank" rel="noopener" href="https://wa.me/2348057940822?text=Hello%20Gpraise%2C%20I%20saw%20the%20BusyHands%20store%20and%20I%20want%20a%20store%20like%20this%20for%20my%20business">💼 This store is for sale – contact Gpraise to get yours</a>
   </div>
 </footer>
 
-<!-- CART DRAWER -->
+<!-- CUSTOMIZER -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-card">
+    <button class="x" id="closeModal" aria-label="Close">✕</button>
+    <div class="mgrid">
+      <div class="viewer" id="viewer">
+        <div class="slab" id="slab"></div>
+        <p class="hint">Drag to turn it around 👆</p>
+      </div>
+      <div class="opts">
+        <h3 id="mName"></h3>
+        <div class="price" id="mPrice"></div>
+        <label>Name or text to knit
+          <input id="cText" maxlength="14" placeholder="e.g. Amelia" autocomplete="off">
+        </label>
+        <div class="lab">Yarn colour</div><div class="swatches" id="cColors"></div>
+        <div class="lab">Lettering style</div><div class="opt-chips" id="cFonts"></div>
+        <div class="lab">Where on the piece</div><div class="opt-chips" id="cPos"></div>
+        <label>Size / age <input id="cSize" placeholder="e.g. M, or 2–3 years"></label>
+        <label>Extra design request <textarea id="cNote" rows="2" placeholder="e.g. add a little flower, cloud patches…"></textarea></label>
+        <div class="qty-row"><button id="qMinus" aria-label="Less">−</button><b id="qVal">1</b><button id="qPlus" aria-label="More">+</button></div>
+        <button class="btn full" id="mAdd">Add to bag</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BAG -->
 <div class="overlay" id="overlay"></div>
 <aside class="drawer" id="drawer" aria-label="Shopping bag">
   <div class="drawer-head"><h3>Your bag</h3><button id="closeCart" aria-label="Close">✕</button></div>
   <div class="drawer-body" id="cartItems"></div>
   <div class="drawer-foot">
-    <div class="total"><span>Total</span><b id="cartTotal">$0</b></div>
+    <input id="buyerName" placeholder="Your name (optional)" autocomplete="name">
+    <input id="buyerPhone" placeholder="Your phone (optional)" autocomplete="tel" inputmode="tel">
+    <div class="total"><span>Total</span><b id="cartTotal">0</b></div>
     <a href="#" class="btn full" id="checkout">Checkout on WhatsApp</a>
   </div>
 </aside>
 
-<a href="#products" class="sticky-btn">🛍️ Shop Now</a>
+<a href="#products" class="sticky-btn">🧶 Shop Now</a>
 <div class="toast" id="toast"></div>
 
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
