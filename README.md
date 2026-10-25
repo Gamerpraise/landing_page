@@ -1,53 +1,50 @@
+# 🛍️ Velora Market – 3D Shopping Landing Page
 
-🚀 Landing Page Template by Gpraise
-
-A clean, responsive, high-converting landing page template built with **HTML, CSS & JS** only. No framework needed. Perfect for selling any course, product or service.
-
-🔗 **Live Demo:** https://webdev-seven-mauve.vercel.app/
+A beautiful **3D online store template** built with plain **HTML, CSS & JavaScript**. No framework, no install, no Three.js. Made for business owners who want to show and sell products like **hair, clothes, shoes, bags, beauty and accessories**.
 
 Created by **Gpraise**
 
 ---
 
-📁 What You Get
-- `index.html` - Main page structure
-- `style.css` - All designs & responsive layout
-- `script.js` - FAQ toggle + animations
-- `assets/` folder - All images
+## ✨ What You Get
+- 3D spinning product ring (drag it with your finger or mouse)
+- 3D tilt cards for categories and products
+- Drag-to-spin 3D gift box deal section
+- Shopping bag (cart) with **WhatsApp checkout**
+- Category filters, reviews, seller section, mobile-friendly layout
+
+## 📁 Files
+| File | What it does |
+|---|---|
+| `index.html` | Page structure and text |
+| `style.css` | Colors, 3D effects, layout |
+| `script.js` | **Store settings, products**, cart and 3D animations |
+| `assets/` | Product images and logo (SVG) |
 
 ---
 
-📲 How To Edit On Your Phone (EASY METHOD)
+## 📲 How To Edit On Your Phone (EASY METHOD)
 
 You don't need a laptop.
 
-**Step 1: Download This Template**
-1. On this GitHub page, click green button `Code` > `Download ZIP`
-2. Go to your file manager and unzip it.
+**Step 1: Download this template**
+1. On this GitHub page click the green `Code` button > `Download ZIP`
+2. Open your file manager and unzip it.
 
-**Step 2: Download Code Editor**
-Install ONE of these from Play Store:
-- **Spck Editor** (Best) - Recommended
-- **QuickEdit**
-- **Acode**
+**Step 2: Open the GP Code editor**
+Use the free online code editor here: **https://gpcode-eta.vercel.app/**
 
-**Step 3: Import Into Editor**
-1. Open Spck Editor
-2. Click `Open Folder` / `Import Project`
-3. Select the folder you unzipped `landing_page`
-4. Now you can edit all files easily.
+**Step 3: Import your project**
+1. Open https://gpcode-eta.vercel.app/ in your phone browser
+2. Open / import the unzipped `landing_page` folder (or its files)
+3. Edit `index.html`, `style.css` and `script.js`, then preview your changes
 
 ---
 
-💻 METHOD 2: Install With Termux (For Tech Guys)
+## 💻 METHOD 2: Termux (For Tech Guys)
 
-If you prefer Termux, you can clone my repo directly to your phone.
-
-**Step 1: Install Termux**
-Install Termux from F-Droid (Don't use Play Store version, it's old).
-
-**Step 2: Clone My Repo**
-Open Termux and type these commands one by one:
+1. Install Termux from F-Droid (not Play Store)
+2. Run these one by one:
 
 ```bash
 pkg update && pkg upgrade -y
@@ -56,111 +53,101 @@ git clone https://github.com/Gamerpraise/landing_page.git
 cd landing_page
 ls
 ```
-Now the whole template is in your phone storage at `/data/data/com.termux/files/home/landing_page`
 
-*Step 3: Open in Editor*
-Now open Spck Editor > Open Folder > Go to Termux folder location or just open the files from file manager.
+3. Open the files in the GP Code editor: https://gpcode-eta.vercel.app/
+4. To push changes back to GitHub (optional):
 
-*Step 4: To Push Your Changes Back to GitHub (Optional)*
+```bash
 git add .
-git commit -m "updated design"
+git commit -m "updated store"
 git push
----
-
-🖼️ What To Change / Replace
-
-*1. Change Your Images*
-Go to `assets/` folder and replace these files with your own, KEEP SAME NAME:
-File to Replace	What it is
-`assets/logo.png`	Your logo on top
-`assets/favicon.png`	Small icon on browser tab
-`assets/hero.png`	Main big image in hero section
-`assets/certificate.png`	Certificate / product image
-> Tip: Use 1:1 size for logo (200x200px), hero image should be 600x600px PNG for best quality.
-
-*2. Change Your Payment Link (Selar Link)*
-This is VERY important. Your Selar link is in 6 places.
-
-Open `index.html` and Find & Replace:
-
-Search for: `https://selar.com/755jlg800r`
-
-Replace with: `YOUR OWN SELAR LINK`
-
-In Spck Editor: Click search icon > Replace All. It will change all Enroll buttons at once.
-
-*3. Change Price*
-Search in `index.html` for `$15` and replace with your price e.g `$20` or `₦15,000`
-
-There are 3 places:
-- Hero section: `Only $15`
-- CTA section: `Get Full Access for $15`
-- Sticky button: `Enroll Now for $15`
-
-*4. Change Text & Colors*
-- To change text: Just edit inside `index.html` - all text is clearly labeled.
-- To change colors: Open `style.css` and at the top look for `:root` colors and change them.
+```
 
 ---
 
-🎨 How To Change Colors & Design Easily (No Coding Needed)
+## 🛒 How To Make It YOUR Store
 
-If you don't know CSS or JavaScript, use this free AI tool.
+### 1. Your WhatsApp number, name & currency
+Open `script.js`. At the very top you will see:
 
-🌐 *Website:* https://zzzcode.ai/code-generator
+```js
+const STORE = {
+  name: "Velora Market",
+  whatsapp: "2348057940822",   // country code, no + or spaces
+  currency: "$"                // or "₦"
+};
+```
+Change them. Every order from the cart goes to **your** WhatsApp.
 
-*To Change `style.css` (Colors, Fonts, Buttons):*
-1. Go to https://zzzcode.ai/code-generator
-2. In the first small box, type: `CSS`
-3. In the second big box, paste your full `style.css` code
-4. In the prompt box below, type what you want like:
-   > "Change the main color to blue and black, make buttons more rounded and modern"
-   > "Change the background to dark mode"
-   > "Make the header sticky and change font to Poppins"
-5. Click Generate > Copy the new code > Paste it back in your `style.css`
+### 2. Add, edit or remove products
+Still in `script.js`, find `const PRODUCTS = [ ... ]`. One line = one product:
 
-*To Change JavaScript (Animations, FAQ):*
-1. Go to https://zzzcode.ai/code-generator
-2. In the first small box, type: `JavaScript`
-3. In the second big box, paste your `script.js` code
-4. Type what you want:
-   > "Make FAQ open smoother with animation"
-   > "Add scroll animation to cards"
-5. Generate and replace.
+```js
+{ id:9, name:"Curly Wig", cat:"Hair", price:120, old:150, img:"assets/wig.jpg", tag:"New" },
+```
+- `id` must be a unique number
+- `cat` must match a category: Hair, Clothes, Shoes, Bags, Beauty, Accessories
+- `old` is the crossed-out price (use `0` for none)
+- `tag` is the small label on the card
 
-> This is the easiest way to edit if you don't know how to code.
+### 3. Use your own product photos
+1. Put your photos inside the `assets/` folder (`.jpg`, `.png`, `.webp` or `.svg`)
+2. Set the `img:` path of that product, e.g. `img:"assets/wig.jpg"`
+3. Use **square photos** (800×800px) for best results
+4. Replace `assets/logo.svg` and `assets/favicon.svg` with your own logo (keep the same names)
+
+### 4. Change categories
+In `script.js` edit `const CATEGORIES = [ ... ]` (name, emoji icon, short text).
+
+### 5. Change text
+Edit words directly in `index.html` (hero headline, reviews, the "Glow-Up Box" deal, footer).
+
+### 6. Change colors
+Open `style.css`. At the top, change the `:root` colors:
+
+```css
+--bg:#fff8f3;   /* page background */
+--pink:#ff5d8f; /* main brand color */
+--ink:#2a1633;  /* dark text */
+```
+Want blue? Change `--pink` and `--pink-dark` to blue shades. Done.
+
+### 7. Make the 3D ring bigger or smaller
+In `style.css` change `--ring-r:270px;` (bigger number = wider ring).
 
 ---
 
-🚀 How To Host For FREE
-
-You have 3 free options:
-
-*1. GitHub Pages (Easiest & Recommended)*
-1. In your repo `landing_page`, go to `Settings` > `Pages`
-2. Under Source, select Branch: `main` and Folder: `/ (root)` > Save
-3. Wait 2 minutes, your site will be live at: `https://gamerpraise.github.io/landing_page/`
-
-*2. Netlify (Best for custom domain)*
-1. Go to https://www.netlify.com > Drag and drop your entire project folder
-2. Done. Live link in 10 seconds.
-
-*3. Vercel*
-1. Go to https://vercel.com > Add New Project > Import your GitHub repo `landing_page`
-2. Click Deploy.
-
-*📱 After Hosting*
-Copy your live link and put it in your WhatsApp bio, Instagram bio, TikTok and Facebook to start getting sales.
+## 🎨 Change Design Without Coding (AI helper)
+Use https://zzzcode.ai/code-generator
+1. Type `CSS` (or `JavaScript`) in the first box
+2. Paste your whole `style.css` (or `script.js`)
+3. Type what you want, e.g. *"change the main color to blue"*
+4. Copy the result and paste it back in your file
 
 ---
 
-📞 Need Help?
+## 🚀 Host For FREE
+1. **GitHub Pages:** repo `Settings` > `Pages` > Branch `main` / `(root)` > Save
+2. **Netlify:** https://www.netlify.com – drag and drop the project folder
+3. **Vercel:** https://vercel.com – Add New Project > import your repo > Deploy
 
-Template by *Gpraise*. If you need help editing, message me on WhatsApp.
+📱 Then share your live link on WhatsApp status, Instagram, TikTok and Facebook.
 
-<a href="https://wa.me/2348057940822?text=Hello%20Gpraise%2C%20please%20I%20need%20help%20on%20how%20to%20set%20up%20landing_page%20repo">
-  <img src="https://img.shields.io/badge/Chat%20on%20WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="WhatsApp Icon" />
+---
+
+## 🔮 Coming Soon
+- Seller / admin dashboard to upload products
+- Firebase login, database and image uploads
+- Buyer accounts and order tracking
+
+---
+
+## 📞 Need Help?
+Message **Gpraise** on WhatsApp:
+
+<a href="https://wa.me/2348057940822?text=Hello%20Gpraise%2C%20please%20I%20need%20help%20with%20the%20Velora%20store%20template">
+  <img src="https://img.shields.io/badge/Chat%20on%20WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" alt="Chat on WhatsApp" />
 </a>
 
 ---
-© 2026 Gpraise - Landing Page Template. All Rights Reserved.
+© 2026 Gpraise – Velora Market Template. All Rights Reserved.
