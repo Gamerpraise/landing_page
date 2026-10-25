@@ -10,6 +10,8 @@ export const firebaseConfig = {
   appId: "1:1045719865464:web:72514219651e245806758d",
   measurementId: "G-KP9WB4Z5XY"
 };
+/* The ONLY email allowed to register and use Admin. firestore.rules enforces the same email on the server. */
+export const ADMIN_EMAIL = "gamerpraisemoder@gmail.com";
 
 let dbP, authP;
 export function fbDB(){

@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BusyHands – Handmade Knits With Your Name On Them</title>
-<meta name="description" content="Hand-knitted dresses, sweaters, gloves and shorts. Customize with your name and order on WhatsApp.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2718%27 fill=%27%23e0457b%27/%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2716%27 fill=%27%23fff%27/%3E%3C/svg%3E" type="image/svg+xml">
+<title>BusyHands – Handmade knits with your name on them</title>
+<meta name="description" content="Hand-knitted pieces made to order. Customise with your name and order on WhatsApp.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%231d1b1a%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2740%27 font-family=%27Georgia,serif%27 font-weight=%27700%27 text-anchor=%27middle%27 fill=%27%23fff%27%3EB%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fraunces:wght@600;800&family=Fredoka:wght@500;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fraunces:wght@600;700&family=Fredoka:wght@500;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="design.css">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -16,16 +16,15 @@
 
 <header class="header">
   <div class="container nav">
-    <a href="#top" class="logo"><svg class="lg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a9c"/><stop offset="1" stop-color="#c9285d"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lgg)"/><circle cx="32" cy="32" r="16" fill="#fff"/><path d="M19 28q13 8 26 0M18 35q14 8 28 0M23 21q9 14 18 22M41 21q-9 14-18 22" stroke="#c9285d" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><span id="shopName">BusyHands</span></a>
+    <a href="#top" class="logo" id="shopName">BusyHands</a>
     <nav class="links">
-      <a href="#categories">Shop</a>
-      <a href="#products">Trending</a>
-      <a href="#spin">Cozy Set</a>
+      <a href="#categories">Categories</a>
+      <a href="#products">Shop</a>
       <a href="#how">How it works</a>
     </nav>
     <div class="nav-actions">
-      <a href="admin.html" class="admin-btn" title="Seller login">🔐 <span>Admin</span></a>
-      <button class="cart-btn" id="openCart" aria-label="Open bag">🧶 <b id="cartCount">0</b></button>
+      <a href="admin.html" class="admin-btn">Admin</a>
+      <button class="cart-btn" id="openCart" aria-label="Open bag">Bag <b id="cartCount">0</b></button>
     </div>
   </div>
 </header>
@@ -33,99 +32,46 @@
 <main id="top">
 
 <section class="hero">
-  <div class="float-shapes" aria-hidden="true">
-    <div class="cube c1"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    <div class="cube c2"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    <div class="orb o1"></div><div class="orb o2"></div>
-  </div>
   <div class="container hero-grid">
     <div class="hero-text">
-      <span class="badge">🧶 Handmade with love</span>
-      <h1>Cozy knits, <em>stitched</em> with your name.</h1>
-      <p>Hand-knitted dresses, sweaters, gloves and shorts. Pick your piece, choose your yarn and we'll knit your name right into it.</p>
+      <h1>Handmade knits, stitched with your name.</h1>
+      <p>Choose a piece, pick your yarn and lettering, and we knit your name into it. Orders are sent straight to WhatsApp.</p>
       <div class="hero-buttons">
-        <a href="#products" class="btn">Shop Knits</a>
+        <a href="#products" class="btn">Shop now</a>
         <a href="#how" class="btn-outline">How it works</a>
       </div>
-      <ul class="hero-stats">
-        <li><b>100%</b><span>Handmade</span></li>
-        <li><b>Your</b><span>Name stitched</span></li>
-        <li><b>Made</b><span>Just for you</span></li>
-      </ul>
     </div>
     <div class="scene" id="scene">
       <div class="ring" id="ring"></div>
-      <p class="hint">Drag to spin 👆</p>
+      <p class="hint">Drag to rotate</p>
     </div>
   </div>
 </section>
 
-<div class="marquee" aria-hidden="true">
-  <div class="track">
-    <span>🧶 Handmade with love</span><span>✍️ Your name stitched in</span><span>💬 Order on WhatsApp</span><span>🎁 Gift ready</span><span>📦 Delivery available</span>
-    <span>🧶 Handmade with love</span><span>✍️ Your name stitched in</span><span>💬 Order on WhatsApp</span><span>🎁 Gift ready</span><span>📦 Delivery available</span>
-  </div>
-</div>
-
-<section id="categories" class="section">
+<section id="categories" class="section hidden">
   <div class="container">
-    <div class="section-title"><h2>Shop by category</h2><p>Everything is knitted by hand, one stitch at a time.</p></div>
+    <div class="section-title"><h2>Shop by category</h2></div>
     <div class="cat-grid" id="catGrid"></div>
   </div>
 </section>
 
 <section id="products" class="section alt">
   <div class="container">
-    <div class="section-title"><h2>Trending knits</h2><p>Tap “Customize” to see it in 3D with your name on it.</p></div>
+    <div class="section-title"><h2>Shop</h2><p>Select “Customize” to preview a piece in 3D with your name on it.</p></div>
     <div class="chips" id="chips"></div>
     <div class="product-grid" id="productGrid"></div>
   </div>
 </section>
 
-<section id="spin" class="section">
-  <div class="container spin-grid">
-    <div class="spin-stage" id="boxStage">
-      <div class="box" id="box"></div>
-      <p class="hint">Drag the box 👆</p>
-    </div>
-    <div>
-      <span class="badge">🎁 Gift favourite</span>
-      <h2 class="big">The Cozy Set</h2>
-      <p class="muted">Three of our favourites, knitted to match and wrapped like a gift. Add a name to each piece for a gift she'll never forget.</p>
-      <div class="deal-price" id="dealPrice"></div>
-      <a href="#" class="btn" id="dealBtn">Order the set</a>
-    </div>
-  </div>
-</section>
-
-<section id="how" class="section alt">
+<section id="how" class="section">
   <div class="container">
     <div class="section-title"><h2>How it works</h2></div>
-    <div class="why-grid">
-      <div class="tilt why"><span>👗</span><h3>1. Pick a piece</h3><p>Choose a knit you love.</p></div>
-      <div class="tilt why"><span>✨</span><h3>2. Make it yours</h3><p>Spin it in 3D, add a name, pick yarn and style.</p></div>
-      <div class="tilt why"><span>💬</span><h3>3. Send on WhatsApp</h3><p>Your design goes straight to the knitter.</p></div>
-      <div class="tilt why"><span>🧶</span><h3>4. We knit it</h3><p>Made by hand, exactly how you designed it.</p></div>
+    <div class="steps">
+      <div class="step"><span>01</span><h3>Pick a piece</h3><p>Choose a knit you love.</p></div>
+      <div class="step"><span>02</span><h3>Make it yours</h3><p>Spin it in 3D, add a name, pick yarn and style.</p></div>
+      <div class="step"><span>03</span><h3>Send on WhatsApp</h3><p>Your design goes straight to the knitter.</p></div>
+      <div class="step"><span>04</span><h3>We knit it</h3><p>Made by hand, exactly how you designed it.</p></div>
     </div>
-  </div>
-</section>
-
-<section class="section">
-  <div class="container">
-    <div class="section-title"><h2>Loved by our girls</h2></div>
-    <div class="why-grid three">
-      <div class="tilt review"><div class="stars">★★★★★</div><p>“My daughter's name on her little sweater. She won't take it off!”</p><b>— Amara O.</b></div>
-      <div class="tilt review"><div class="stars">★★★★★</div><p>“So soft and the stitching is perfect. Ordering on WhatsApp was easy.”</p><b>— Tola A.</b></div>
-      <div class="tilt review"><div class="stars">★★★★★</div><p>“Got matching mittens for my sisters. Everyone asked where I got them.”</p><b>— Chioma M.</b></div>
-    </div>
-  </div>
-</section>
-
-<section class="cta">
-  <div class="container">
-    <h2>Made just for you</h2>
-    <p>Tell us the name, the colour, the vibe. We'll knit it.</p>
-    <a href="#products" class="btn btn-light">Start customizing</a>
   </div>
 </section>
 
@@ -133,23 +79,23 @@
 
 <footer>
   <div class="container foot">
-    <p>© 2026 BusyHands. All rights reserved.</p>
-    <p><a href="admin.html">🔐 Seller login</a></p>
+    <p>© 2026 <span class="fname">BusyHands</span>. All rights reserved.</p>
+    <p><a href="admin.html">Seller login</a></p>
   </div>
   <div class="container watermark">
-    <p>Made by <a href="https://wa.me/2348057940822" target="_blank" rel="noopener">Gpraise ❤️‍🔥</a></p>
-    <a class="forsale" target="_blank" rel="noopener" href="https://wa.me/2348057940822?text=Hello%20Gpraise%2C%20I%20saw%20the%20BusyHands%20store%20and%20I%20want%20a%20store%20like%20this%20for%20my%20business">💼 This store is for sale – contact Gpraise to get yours</a>
+    <p>Made by <a href="https://wa.me/2348057940822" target="_blank" rel="noopener">Gpraise</a></p>
+    <a target="_blank" rel="noopener" href="https://wa.me/2348057940822?text=Hello%20Gpraise%2C%20I%20saw%20the%20BusyHands%20store%20and%20I%20want%20a%20store%20like%20this%20for%20my%20business">Want a store like this? Contact Gpraise</a>
   </div>
 </footer>
 
 <!-- CUSTOMIZER -->
 <div class="modal" id="modal" aria-hidden="true">
   <div class="modal-card">
-    <button class="x" id="closeModal" aria-label="Close">✕</button>
+    <button class="x" id="closeModal" aria-label="Close">&times;</button>
     <div class="mgrid">
       <div class="viewer" id="viewer">
         <div class="slab" id="slab"></div>
-        <p class="hint">Drag to turn it around 👆</p>
+        <p class="hint">Drag to turn it around</p>
       </div>
       <div class="opts">
         <h3 id="mName"></h3>
@@ -161,7 +107,7 @@
         <div class="lab">Lettering style</div><div class="opt-chips" id="cFonts"></div>
         <div class="lab">Where on the piece</div><div class="opt-chips" id="cPos"></div>
         <label>Size / age <input id="cSize" placeholder="e.g. M, or 2–3 years"></label>
-        <label>Extra design request <textarea id="cNote" rows="2" placeholder="e.g. add a little flower, cloud patches…"></textarea></label>
+        <label>Extra design request <textarea id="cNote" rows="2" placeholder="e.g. add a small flower"></textarea></label>
         <div class="qty-row"><button id="qMinus" aria-label="Less">−</button><b id="qVal">1</b><button id="qPlus" aria-label="More">+</button></div>
         <button class="btn full" id="mAdd">Add to bag</button>
       </div>
@@ -172,7 +118,7 @@
 <!-- BAG -->
 <div class="overlay" id="overlay"></div>
 <aside class="drawer" id="drawer" aria-label="Shopping bag">
-  <div class="drawer-head"><h3>Your bag</h3><button id="closeCart" aria-label="Close">✕</button></div>
+  <div class="drawer-head"><h3>Your bag</h3><button id="closeCart" aria-label="Close">&times;</button></div>
   <div class="drawer-body" id="cartItems"></div>
   <div class="drawer-foot">
     <input id="buyerName" placeholder="Your name (optional)" autocomplete="name">
@@ -182,7 +128,6 @@
   </div>
 </aside>
 
-<a href="#products" class="sticky-btn">🧶 Shop Now</a>
 <div class="toast" id="toast"></div>
 
 <script type="module" src="script.js"></script>

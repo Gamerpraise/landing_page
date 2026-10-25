@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Register – BusyHands Admin</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%231d1b1a%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2740%27 font-family=%27Georgia,serif%27 font-weight=%27700%27 text-anchor=%27middle%27 fill=%27%23fff%27%3EB%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<section class="center">
+  <div class="card login-card">
+    <h1>Create admin account</h1>
+    <p class="muted">Only the shop owner's email can register.</p>
+    <form id="regForm" autocomplete="on">
+      <label>Email <input id="rEmail" type="email" autocomplete="username" required></label>
+      <label>Password <input id="rPass" type="password" autocomplete="new-password" required minlength="8"></label>
+      <label>Confirm password <input id="rPass2" type="password" autocomplete="new-password" required minlength="8"></label>
+      <button class="btn" id="regBtn" type="submit">Register</button>
+    </form>
+    <p class="err" id="regErr" role="alert"></p>
+    <p class="ok" id="regOk" role="status"></p>
+    <p class="small muted">Already registered? <a class="lnk" href="admin.html">Sign in</a> &nbsp;·&nbsp; <a class="lnk" href="index.html">Back to shop</a></p>
+  </div>
+</section>
+<script type="module" src="register.js"></script>
+</body>
+</html>

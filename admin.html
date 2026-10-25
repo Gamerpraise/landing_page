@@ -4,51 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex,nofollow">
-<title>BusyHands Admin</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2718%27 fill=%27%23e0457b%27/%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2716%27 fill=%27%23fff%27/%3E%3C/svg%3E" type="image/svg+xml">
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fraunces:wght@600;800&family=Fredoka:wght@500;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<title>Admin – BusyHands</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%231d1b1a%27/%3E%3Ctext x=%2732%27 y=%2745%27 font-size=%2740%27 font-family=%27Georgia,serif%27 font-weight=%27700%27 text-anchor=%27middle%27 fill=%27%23fff%27%3EB%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fraunces:wght@600;700&family=Fredoka:wght@500;600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="design.css">
 <link rel="stylesheet" href="admin.css">
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- SIGN IN -->
 <section id="login" class="center">
   <div class="card login-card">
-    <svg class="lg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a9c"/><stop offset="1" stop-color="#c9285d"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lgg)"/><circle cx="32" cy="32" r="16" fill="#fff"/><path d="M19 28q13 8 26 0M18 35q14 8 28 0M23 21q9 14 18 22M41 21q-9 14-18 22" stroke="#c9285d" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
-    <h1>BusyHands Admin</h1>
-    <p class="muted">Seller area. Sign in with your email and password.</p>
+    <h1>Admin sign in</h1>
+    <p class="muted">Seller area for the shop owner.</p>
     <form id="loginForm" autocomplete="on">
-      <label>Email <input id="lEmail" type="email" autocomplete="username" required placeholder="you@example.com"></label>
-      <label>Password <input id="lPass" type="password" autocomplete="current-password" required minlength="6" placeholder="Your password"></label>
+      <label>Email <input id="lEmail" type="email" autocomplete="username" required></label>
+      <label>Password <input id="lPass" type="password" autocomplete="current-password" required minlength="6"></label>
       <button class="btn" id="loginBtn" type="submit">Sign in</button>
       <button class="linkbtn" id="forgotBtn" type="button">Forgot password?</button>
     </form>
-    <p class="err" id="loginErr"></p>
-    <a class="back" href="index.html">← Back to shop</a>
+    <p class="err" id="loginErr" role="alert"></p>
+    <p class="small muted">No account yet? <a class="lnk" href="register.html">Register</a> &nbsp;·&nbsp; <a class="lnk" href="index.html">Back to shop</a></p>
   </div>
 </section>
 
 <!-- APP -->
 <div id="app" class="hidden">
   <header class="top">
-    <a href="index.html" class="brand"><svg class="lg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a9c"/><stop offset="1" stop-color="#c9285d"/></linearGradient></defs><rect width="64" height="64" rx="18" fill="url(#lgg)"/><circle cx="32" cy="32" r="16" fill="#fff"/><path d="M19 28q13 8 26 0M18 35q14 8 28 0M23 21q9 14 18 22M41 21q-9 14-18 22" stroke="#c9285d" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><b>BusyHands Admin</b></a>
+    <a href="index.html" class="brand">BusyHands <span>Admin</span></a>
     <div class="who"><span id="who"></span><button class="mini" id="signOut">Sign out</button></div>
   </header>
 
   <nav class="tabs">
-    <button class="tab on" data-tab="orders">🧶 Orders <i id="newBadge" class="badge hidden">0</i></button>
-    <button class="tab" data-tab="products">🛍️ Products</button>
-    <button class="tab" data-tab="categories">🏷️ Categories</button>
-    <button class="tab" data-tab="settings">⚙️ Settings</button>
+    <button class="tab on" data-tab="orders">Orders <i id="newBadge" class="badge hidden">0</i></button>
+    <button class="tab" data-tab="products">Products</button>
+    <button class="tab" data-tab="categories">Categories</button>
+    <button class="tab" data-tab="settings">Settings</button>
   </nav>
 
   <main class="wrap">
 
     <!-- ORDERS -->
     <section id="tab-orders">
-      <div class="row between"><h2>Customer designs</h2><button class="mini" id="refresh">↻ Refresh</button></div>
-      <p class="muted small">When a customer taps checkout, their chosen design lands here. Open it, knit it exactly like this, then tap “Mark done”.</p>
+      <div class="row between"><h2>Customer designs</h2><button class="mini" id="refresh">Refresh</button></div>
+      <p class="muted small">When a customer checks out, their design appears here. Knit it exactly as shown, then mark it done.</p>
       <div id="orders"></div>
     </section>
 
@@ -61,7 +60,7 @@
         </label>
         <div class="pv-row">
           <div class="pv" id="pv">No photo yet</div>
-          <p class="small muted" id="pvInfo">Photos are automatically cropped to a square and compressed (about 60–90 KB) so you never run out of storage. Use clear, bright photos on a plain background.</p>
+          <p class="small muted" id="pvInfo">Photos are cropped square and compressed to about 80 KB automatically. Use a clear, bright photo on a plain background.</p>
         </div>
         <label>Name <input id="pName" maxlength="60" placeholder="e.g. Cloud Knit Sweater"></label>
         <div class="two">
@@ -87,12 +86,9 @@
     <section id="tab-categories" class="hidden">
       <div class="card">
         <h2>Add a category</h2>
-        <p class="small muted">These show on your shop as “Shop by category” and as filter buttons. Add the kinds of things you sell.</p>
-        <div class="three">
-          <label>Icon <input id="cIcon" maxlength="4" placeholder="🧥"></label>
-          <label>Name <input id="cName" maxlength="24" placeholder="e.g. Sweaters"></label>
-        </div>
-        <label>Short description (optional) <input id="cText" maxlength="40" placeholder="e.g. Cardigans &amp; jumpers"></label>
+        <p class="small muted">Categories appear on the shop and in the product form. Add the kinds of things you sell.</p>
+        <label>Name <input id="cName" maxlength="24" placeholder="e.g. Sweaters"></label>
+        <label>Short description (optional) <input id="cText" maxlength="40" placeholder="e.g. Cardigans and jumpers"></label>
         <button class="btn" id="addCat">Add category</button>
         <p class="msg" id="cMsg"></p>
       </div>
@@ -107,7 +103,7 @@
         <label>WhatsApp number (customers message this number)
           <input id="sWa" inputmode="tel" placeholder="2348012345678">
         </label>
-        <p class="small muted">Use the country code and no “+” or spaces. Example: Nigeria 0801 234 5678 → <b>2348012345678</b></p>
+        <p class="small muted">Use the country code, with no “+”, “0” or spaces. Example: Nigeria 0801 234 5678 becomes <b>2348012345678</b>.</p>
         <label>Shop name <input id="sName" maxlength="40" placeholder="BusyHands"></label>
         <label>Currency symbol <input id="sCur" maxlength="4" placeholder="₦"></label>
         <button class="btn" id="saveSettings">Save settings</button>
@@ -116,11 +112,6 @@
     </section>
   </main>
 </div>
-
-<footer class="wm">
-  <p>Made by <a href="https://wa.me/2348057940822" target="_blank" rel="noopener">Gpraise ❤️‍🔥</a></p>
-  <a class="forsale" target="_blank" rel="noopener" href="https://wa.me/2348057940822?text=Hello%20Gpraise%2C%20I%20saw%20the%20BusyHands%20store%20and%20I%20want%20a%20store%20like%20this">💼 This store is for sale – contact Gpraise</a>
-</footer>
 
 <div class="toast" id="toast"></div>
 <script type="module" src="admin.js"></script>

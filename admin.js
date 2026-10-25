@@ -1,4 +1,4 @@
-import { fbAuth } from "./firebase.js";
+import { fbAuth, ADMIN_EMAIL } from "./firebase.js";
 import { COLORS, esc, designHTML } from "./design.js";
 
 const $ = s => document.querySelector(s);
@@ -18,23 +18,30 @@ const authMsg = e => ({
 async function start(){
   K = await fbAuth();
   if(!K){ $("#loginErr").textContent = "Can't reach Firebase. Check your internet connection and try again."; return; }
-  const { auth, au, fs, db } = K; let denied = "";
+  const { auth, au, fs, db } = K; let denied = "", justSignedIn = false;
   au.onAuthStateChanged(auth, async user => {
     if(!user){ show("login"); $("#loginErr").textContent = denied; return; }
-    /* The real gate is firestore.rules. Ask for the orders list: only the admin account is allowed to read it. */
+    if((user.email || "").toLowerCase() !== ADMIN_EMAIL){
+      denied = "This account does not have admin access."; await au.signOut(auth); return;
+    }
+    if(!user.emailVerified){
+      if(justSignedIn){ justSignedIn = false; try { await au.sendEmailVerification(user); } catch(e){} }
+      denied = `Verify your email first. A link was sent to ${user.email} (check spam too), then sign in again.`;
+      await au.signOut(auth); return;
+    }
+    /* The real gate is firestore.rules: only the verified admin email can read orders. */
     try { await fs.getDocs(fs.query(fs.collection(db, "orders"), fs.limit(1))); }
     catch(e){
-      denied = e.code === "permission-denied"
-        ? `This account isn't the shop admin yet. If this is your store, paste this ID into firestore.rules and publish: ${user.uid}`
-        : "Couldn't check admin access (" + (e.code || e.message) + "). Try again.";
+      denied = e.code === "permission-denied" ? "This account does not have admin access. Publish firestore.rules in Firebase." : "Couldn't check admin access (" + (e.code || e.message) + "). Try again.";
       await au.signOut(auth); return;
     }
     denied = ""; $("#who").textContent = user.email; show("app"); loadAll(); clearInterval(timer); timer = setInterval(loadOrders, 20000);
   });
   $("#loginForm").onsubmit = async e => {
     e.preventDefault(); denied = ""; $("#loginErr").textContent = ""; const b = $("#loginBtn"); b.disabled = true; b.textContent = "Signing in…";
+    justSignedIn = true;
     try { await au.signInWithEmailAndPassword(auth, $("#lEmail").value.trim(), $("#lPass").value); }
-    catch(err){ $("#loginErr").textContent = authMsg(err); }
+    catch(err){ justSignedIn = false; $("#loginErr").textContent = authMsg(err); }
     b.disabled = false; b.textContent = "Sign in";
   };
   $("#forgotBtn").onclick = async () => {
@@ -71,7 +78,7 @@ async function loadOrders(){
     orders = r.docs.map(d => ({ id:d.id, ...d.data() })); renderOrders();
   } catch(e){ console.warn(e); }
 }
-$("#refresh").onclick = async () => { await loadOrders(); toast("Updated ✔"); };
+$("#refresh").onclick = async () => { await loadOrders(); toast("Updated"); };
 
 /* ---------- Orders ---------- */
 function renderOrders(){
@@ -88,13 +95,13 @@ function renderOrders(){
         return `<div class="oi">${designHTML(p?.image, c)}<ul>
           <li class="nm">${esc(it.name)} × ${it.qty}</li>
           ${c.text ? `<li>Name to knit: <span class="big-name">${esc(c.text)}</span></li><li><span class="chipc" style="background:${esc(c.color)}"></span>${esc(cn)} yarn · ${esc(c.font)} · ${esc(c.pos)}</li>` : `<li class="muted">No name requested</li>`}
-          ${c.size ? `<li>📏 Size: <b>${esc(c.size)}</b></li>` : ""}${c.note ? `<li>📝 ${esc(c.note)}</li>` : ""}
+          ${c.size ? `<li>Size: <b>${esc(c.size)}</b></li>` : ""}${c.note ? `<li>Note: ${esc(c.note)}</li>` : ""}
           ${p ? "" : `<li class="muted small">(product photo no longer in shop)</li>`}</ul></div>`; }).join("")}
       <div class="ofoot">
-        <button class="mini" data-done="${o.id}">${o.status === "done" ? "↩ Reopen" : "✔ Mark done"}</button>
-        ${phone ? `<a class="mini" target="_blank" rel="noopener" href="https://wa.me/${phone}">💬 Message customer</a>` : ""}
+        <button class="mini" data-done="${o.id}">${o.status === "done" ? "Reopen" : "Mark done"}</button>
+        ${phone ? `<a class="mini" target="_blank" rel="noopener" href="https://wa.me/${phone}">Message customer</a>` : ""}
         <button class="mini danger" data-delo="${o.id}">Delete</button></div></div>`; }).join("")
-    : `<p class="empty">No orders yet 🧶<br>When a customer taps checkout, their design will show up here.</p>`;
+    : `<p class="empty">No orders yet. When a customer checks out, their design will show up here.</p>`;
 }
 $("#orders").onclick = async e => {
   const d = e.target.closest("[data-done]"), x = e.target.closest("[data-delo]"); const { fs, db } = K;
@@ -128,7 +135,7 @@ $("#pFile").onchange = async e => {
   $("#pvInfo").textContent = "Compressing…";
   try { const r = await compress(f); newImg = r.url;
     $("#pv").innerHTML = `<img src="${r.url}" alt="">`;
-    $("#pvInfo").textContent = `✔ ${r.before} KB → ${r.kb} KB (${r.px}×${r.px}px)${r.kb < r.before ? " – storage saved!" : " – optimized for the shop"}`;
+    $("#pvInfo").textContent = `${r.before} KB → ${r.kb} KB (${r.px}×${r.px}px)${r.kb < r.before ? " (smaller file)" : " – optimized for the shop"}`;
   } catch(err){ $("#pvInfo").textContent = "Couldn't read that photo. Try another one."; }
 };
 
@@ -138,7 +145,7 @@ function renderProducts(){
   $("#plist").innerHTML = products.length ? products.map(p => `<div class="pi">${designHTML(p.image, null)}
     <h3>${esc(p.name)}</h3><p>${esc(p.cat)} · ${money(p.price)}${p.old ? ` <s>${money(p.old)}</s>` : ""}</p>
     <div class="row"><button class="mini" data-edit="${p.id}">Edit</button><button class="mini danger" data-del="${p.id}">Delete</button></div></div>`).join("")
-    : `<p class="empty" style="grid-column:1/-1">No products yet. Add your first one above 👆<br><span class="small">Until then, customers see sample products.</span></p>`;
+    : `<p class="empty" style="grid-column:1/-1">No products yet. Add your first one above.</p>`;
 }
 function fillCatSelect(keep){
   const list = cats.map(c => c.name); if(keep && !list.includes(keep)) list.push(keep);
@@ -170,7 +177,7 @@ $("#saveProduct").onclick = async () => {
     const { fs, db } = K;
     if(editId) await fs.updateDoc(fs.doc(db, "products", editId), data);
     else await fs.addDoc(fs.collection(db, "products"), { ...data, ts: Date.now() });
-    $("#pMsg").textContent = ""; toast(editId ? "Product updated ✔" : "Product added ✔"); resetForm(); await loadProducts();
+    $("#pMsg").textContent = ""; toast(editId ? "Product updated" : "Product added"); resetForm(); await loadProducts();
   } catch(err){ $("#pMsg").textContent = "Couldn't save: " + (err.code || err.message) + (err.code === "permission-denied" ? " (publish firestore.rules in Firebase)" : ""); }
   b.disabled = false;
 };
@@ -180,9 +187,9 @@ function renderCats(){
   $("#cCount").textContent = cats.length ? `(${cats.length})` : "";
   $("#catList").innerHTML = cats.length ? cats.map((c, i) => {
     const n = products.filter(p => p.cat === c.name).length;
-    return `<div class="catrow"><span class="ci-ico">${esc(c.icon || "🧶")}</span><div class="ci-t"><b>${esc(c.name)}</b><span>${esc(c.text || "")}${c.text ? " · " : ""}${n} product${n === 1 ? "" : "s"}</span></div>
-      <button class="mini" data-cup="${i}" aria-label="Move up" ${i === 0 ? "disabled" : ""}>↑</button><button class="mini danger" data-cdel="${i}">Delete</button></div>`; }).join("")
-    : `<p class="empty">No categories yet 🏷️<br>Add your first one above, then pick it when you add products.</p>`;
+    return `<div class="catrow"><div class="ci-t"><b>${esc(c.name)}</b><span>${esc(c.text || "")}${c.text ? " · " : ""}${n} product${n === 1 ? "" : "s"}</span></div>
+      <button class="mini" data-cup="${i}" aria-label="Move up" ${i === 0 ? "disabled" : ""}>Move up</button><button class="mini danger" data-cdel="${i}">Delete</button></div>`; }).join("")
+    : `<p class="empty">No categories yet. Add your first one above, then pick it when you add products.</p>`;
   fillCatSelect($("#pCat").value || "");
 }
 async function saveCats(msg){
@@ -190,15 +197,15 @@ async function saveCats(msg){
   catch(err){ $("#cMsg").textContent = "Couldn't save: " + (err.code || err.message) + (err.code === "permission-denied" ? " (publish firestore.rules in Firebase)" : ""); await loadSettings(); }
 }
 $("#addCat").onclick = async () => {
-  const name = $("#cName").value.trim().replace(/\s+/g, " "), icon = $("#cIcon").value.trim() || "🧶", text = $("#cText").value.trim();
+  const name = $("#cName").value.trim().replace(/\s+/g, " "), text = $("#cText").value.trim();
   if(!name) return ($("#cMsg").textContent = "Please type a category name.");
   if(cats.some(c => c.name.toLowerCase() === name.toLowerCase())) return ($("#cMsg").textContent = "You already have that category.");
-  $("#cMsg").textContent = ""; cats = [...cats, { name, icon, text }];
-  await saveCats("Category added ✔"); $("#cName").value = ""; $("#cIcon").value = ""; $("#cText").value = "";
+  $("#cMsg").textContent = ""; cats = [...cats, { name, text }];
+  await saveCats("Category added"); $("#cName").value = ""; $("#cText").value = "";
 };
 $("#catList").onclick = async e => {
   const up = e.target.closest("[data-cup]"), del = e.target.closest("[data-cdel]");
-  if(up){ const i = +up.dataset.cup; if(i > 0){ cats = [...cats]; [cats[i-1], cats[i]] = [cats[i], cats[i-1]]; await saveCats("Order saved ✔"); } }
+  if(up){ const i = +up.dataset.cup; if(i > 0){ cats = [...cats]; [cats[i-1], cats[i]] = [cats[i], cats[i-1]]; await saveCats("Order saved"); } }
   if(del){ const i = +del.dataset.cdel, c = cats[i], n = products.filter(p => p.cat === c.name).length;
     if(confirm(n ? `Delete “${c.name}”? ${n} product(s) use it. They stay in your shop but won't appear under this category.` : `Delete “${c.name}”?`)){ cats = cats.filter((_, k) => k !== i); await saveCats("Category deleted"); } }
 };
@@ -209,7 +216,7 @@ $("#saveSettings").onclick = async () => {
   if(wa.length < 8) return ($("#sMsg").textContent = "Please enter a valid WhatsApp number with country code.");
   if(wa.startsWith("0")) return ($("#sMsg").textContent = "Start with the country code, not 0. Example: 2348012345678");
   try { await K.fs.setDoc(K.fs.doc(K.db, "settings", "store"), { whatsapp:wa, name:$("#sName").value.trim() || "BusyHands", currency:$("#sCur").value.trim() || "₦" }, { merge:true });
-    $("#sMsg").textContent = ""; $("#sWa").value = wa; toast("Settings saved ✔"); await loadSettings(); renderProducts(); renderOrders();
+    $("#sMsg").textContent = ""; $("#sWa").value = wa; toast("Settings saved"); await loadSettings(); renderProducts(); renderOrders();
   } catch(err){ $("#sMsg").textContent = "Couldn't save: " + (err.code || err.message); }
 };
 

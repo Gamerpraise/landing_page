@@ -2,15 +2,14 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Only the shop owner's account is admin. Paste the owner's User UID below
-    // (Firebase console > Authentication > Users > copy "User UID").
-    // The admin page also shows your UID if you sign in before it is set.
+    // Only this email, and only after it has been verified, is admin.
     function isAdmin() {
       return request.auth != null
-        && request.auth.uid == 'PASTE_ADMIN_UID_HERE';
+        && request.auth.token.email == 'gamerpraisemoder@gmail.com'
+        && request.auth.token.email_verified == true;
     }
 
-    // Everyone can SEE products & store settings. Only admin can change them.
+    // Everyone can see products and store settings (categories live in settings). Only admin can change them.
     match /products/{id} {
       allow read: if true;
       allow write: if isAdmin();
@@ -20,7 +19,7 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Buyers can only CREATE an order (cannot read, edit or delete any). Only admin reads/manages.
+    // Buyers can only create an order. Only admin can read, update or delete orders.
     match /orders/{id} {
       allow read, update, delete: if isAdmin();
       allow create: if request.resource.data.keys().hasOnly(

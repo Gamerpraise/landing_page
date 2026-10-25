@@ -5,7 +5,6 @@ import { COLORS, FONTS, POS, esc, defaultCustom, yarnStyle, designHTML, describe
    DEFAULT SETTINGS (the seller changes these in the Admin page)
 =========================================== */
 const STORE = { name: "BusyHands", whatsapp: "2348057940822", currency: "₦" };   // fallback until the seller saves settings in Admin
-const GPRAISE = "2348057940822";   // watermark contact (don't remove)
 
 /* ===========================================
    CODE BELOW – only edit if you know JS
@@ -35,7 +34,7 @@ function renderCats(){
   $("#categories").classList.toggle("hidden", !has);
   document.querySelectorAll('a[href="#categories"]').forEach(l => l.classList.toggle("hidden", !has));
   $("#catGrid").innerHTML = CATEGORIES.map(c =>
-    `<div class="cat tilt" data-reveal data-cat="${esc(c.name)}"><span class="ico">${esc(c.icon || "🧶")}</span><h3>${esc(c.name)}</h3><p>${esc(c.text || "")}</p></div>`).join("");
+    `<div class="cat" data-cat="${esc(c.name)}"><h3>${esc(c.name)}</h3>${c.text ? `<p>${esc(c.text)}</p>` : ""}</div>`).join("");
   if(filter !== "All" && !CATEGORIES.some(c => c.name === filter)) filter = "All";
   $("#chips").classList.toggle("hidden", !has);
   $("#chips").innerHTML = ["All", ...CATEGORIES.map(c => c.name)].map(n =>
@@ -44,7 +43,7 @@ function renderCats(){
 function renderProducts(){
   const list = PRODUCTS.filter(p => filter==="All" || p.cat===filter);
   $("#productGrid").innerHTML = list.length ? list.map(p => `
-    <article class="product tilt" data-reveal>
+    <article class="product">
       ${p.tag ? `<span class="tag">${esc(p.tag)}</span>` : ""}
       <div class="pimg" data-cust="${esc(p.id)}"><img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy"></div>
       <div class="pinfo">
@@ -52,22 +51,15 @@ function renderProducts(){
         <h3>${esc(p.name)}</h3>
         <div class="price price-line">${money(p.price)}${p.old ? `<s>${money(p.old)}</s>` : ""}</div>
         <div class="prow">
-          <button class="cust" data-cust="${esc(p.id)}">${p.custom ? "Customize ✨" : "View in 3D ✨"}</button>
-          <button class="add" data-add="${esc(p.id)}" aria-label="Quick add ${esc(p.name)}">+</button>
+          <button class="cust" data-cust="${esc(p.id)}">${p.custom ? "Customize" : "View in 3D"}</button>
+          <button class="add" data-add="${esc(p.id)}" aria-label="Quick add ${esc(p.name)}">Add</button>
         </div>
       </div>
-    </article>`).join("") : `<p class="empty" style="grid-column:1/-1">${loaded ? "Nothing here yet – coming soon! 🧶" : "Loading the shop… 🧶"}</p>`;
-  initEffects();
+    </article>`).join("") : `<p class="empty" style="grid-column:1/-1">${loaded ? "No products yet. Check back soon." : "Loading…"}</p>`;
 }
 function renderAll(){
-  $("#shopName").textContent = STORE.name;
-  renderCats(); renderProducts(); renderRing(); renderBox(); renderCart();
-  const deal = PRODUCTS.length >= 3;
-  $("#spin").classList.toggle("hidden", !deal);
-  document.querySelectorAll('a[href="#spin"]').forEach(l => l.classList.toggle("hidden", !deal));
-  if(deal){ const set = PRODUCTS.slice(0,3), sum = set.reduce((a,p) => a + Number(p.price), 0);
-    $("#dealPrice").innerHTML = `<s>${money(sum)}</s> <b>${money(Math.round(sum*.9/100)*100)}</b>`; }
-  initEffects();
+  document.querySelectorAll("#shopName,.fname").forEach(el => el.textContent = STORE.name);
+  renderCats(); renderProducts(); renderRing(); renderCart();
 }
 
 /* ---------- Hero 3D ring ---------- */
@@ -82,7 +74,7 @@ function placeRing(){
   const r = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--ring-r")) || 270;
   ring.querySelectorAll(".rc").forEach((el,i) => el.style.transform = `rotateY(${i*(360/ringN)}deg) translateZ(${r}px)`);
 }
-addEventListener("resize", () => { placeRing(); placeBox(); });
+addEventListener("resize", placeRing);
 let ringY = 0, ringX = -8, vel = .25, dragging = false, lastX = 0;
 const scene = $("#scene");
 scene.addEventListener("pointerdown", e => { dragging = true; lastX = e.clientX; scene.setPointerCapture(e.pointerId); });
@@ -90,29 +82,13 @@ scene.addEventListener("pointermove", e => { if(dragging){ const dx = e.clientX 
 ["pointerup","pointercancel"].forEach(ev => scene.addEventListener(ev, () => dragging = false));
 scene.addEventListener("mousemove", e => { if(dragging) return; const b = scene.getBoundingClientRect(); ringX = -8 + ((e.clientY-b.top)/b.height-.5)*-14; });
 
-/* ---------- Spin box ---------- */
-const box = $("#box"), stage = $("#boxStage");
-function renderBox(){
-  const imgs = PRODUCTS.map(p => p.img); while(imgs.length && imgs.length < 6) imgs.push(...imgs);
-  box.innerHTML = imgs.slice(0,6).map(src => `<div class="face"><img src="${esc(src)}" alt=""></div>`).join(""); placeBox();
-}
-function placeBox(){
-  const h = box.offsetWidth/2;
-  const t = [`translateZ(${h}px)`,`rotateY(180deg) translateZ(${h}px)`,`rotateY(90deg) translateZ(${h}px)`,`rotateY(-90deg) translateZ(${h}px)`,`rotateX(90deg) translateZ(${h}px)`,`rotateX(-90deg) translateZ(${h}px)`];
-  box.querySelectorAll(".face").forEach((f,i) => f.style.transform = t[i]);
-}
-let boxY = 30, boxX = -20, boxDrag = false, bx = 0, by = 0;
-stage.addEventListener("pointerdown", e => { boxDrag = true; bx = e.clientX; by = e.clientY; stage.setPointerCapture(e.pointerId); });
-stage.addEventListener("pointermove", e => { if(!boxDrag) return; boxY += (e.clientX-bx)*.6; boxX -= (e.clientY-by)*.4; bx = e.clientX; by = e.clientY; });
-["pointerup","pointercancel"].forEach(ev => stage.addEventListener(ev, () => boxDrag = false));
-
 /* ---------- 3D customizer ---------- */
 const slab = $("#slab"), viewer = $("#viewer");
 let cur = null, vY = -25, vX = -8, vDrag = false, vx = 0, vy = 0, vAuto = true;
 function buildSlab(p){
   slab.innerHTML = `
     <div class="sf front"><img src="${esc(p.img)}" alt=""><span class="yt" id="ytFront"></span></div>
-    <div class="sf back"><div><b>Knitted for</b><span class="yt" id="ytBack"></span><div id="backInfo"></div><small>${esc(STORE.name)} 🧶</small></div></div>
+    <div class="sf back"><div><b>Knitted for</b><span class="yt" id="ytBack"></span><div id="backInfo"></div><small>${esc(STORE.name)}</small></div></div>
     <div class="sf side r"></div><div class="sf side l"></div><div class="sf side t"></div><div class="sf side b"></div>`;
 }
 function paintSlab(){
@@ -163,24 +139,9 @@ $("#mAdd").addEventListener("click", () => { addToCart(cur.p, cur.c, cur.qty); c
 (function loop(){
   if(!dragging){ vel += (.25 - vel)*.03; ringY += vel; }
   ring.style.transform = `rotateX(${ringX}deg) rotateY(${ringY}deg)`;
-  if(!boxDrag) boxY += .4;
-  box.style.transform = `rotateX(${boxX}deg) rotateY(${boxY}deg)`;
   if(cur){ if(vAuto) vY += .5; slab.style.transform = `rotateX(${vX}deg) rotateY(${vY}deg)`; }
   requestAnimationFrame(loop);
 })();
-
-/* ---------- tilt + reveal ---------- */
-const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){ e.target.classList.add("show"); io.unobserve(e.target); } }), { threshold:.1 });
-function initEffects(){
-  document.querySelectorAll(".tilt").forEach(el => {
-    if(el.dataset.t) return; el.dataset.t = 1;
-    el.addEventListener("pointermove", e => { if(e.pointerType === "touch") return; const b = el.getBoundingClientRect();
-      const x = (e.clientX-b.left)/b.width-.5, y = (e.clientY-b.top)/b.height-.5; el.style.transform = `rotateY(${x*12}deg) rotateX(${-y*12}deg) translateY(-6px)`; });
-    el.addEventListener("pointerleave", () => el.style.transform = "");
-  });
-  document.querySelectorAll("[data-reveal]:not(.show)").forEach(el => io.observe(el));
-}
-addEventListener("scroll", () => { document.querySelectorAll(".float-shapes > *").forEach((el,i) => el.style.translate = `0 ${scrollY*(.08+i*.04)}px`); }, { passive:true });
 
 /* ---------- Bag ---------- */
 function toast(msg){ const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 1800); }
@@ -190,21 +151,21 @@ function addToCart(p, c, qty = 1){
   const key = p.id + "|" + JSON.stringify(custom);
   const f = cart.find(x => x.key === key);
   f ? f.qty += qty : cart.push({ key, p, custom, qty });
-  renderCart(); toast(`Added ${p.name} 🎉`);
+  renderCart(); toast(`Added ${p.name}`);
   const b = $("#openCart"); b.classList.remove("bump"); void b.offsetWidth; b.classList.add("bump");
 }
 function renderCart(){
   $("#cartCount").textContent = cart.reduce((a,c) => a + c.qty, 0);
   $("#cartTotal").textContent = money(cart.reduce((a,c) => a + c.qty*c.p.price, 0));
   $("#cartItems").innerHTML = cart.length ? cart.map((c,i) => `
-    <div class="ci">${designHTML(c.p.img, c.custom)}<div>${esc(c.p.name)}<br><b>${money(c.p.price)}</b> × ${c.qty}<small>${esc(describe(c.custom))}</small></div><button data-rm="${i}" aria-label="Remove">✕</button></div>`).join("")
-    : `<p class="empty">Your bag is empty 🧶<br>Add something you love!</p>`;
+    <div class="ci">${designHTML(c.p.img, c.custom)}<div>${esc(c.p.name)}<br><b>${money(c.p.price)}</b> × ${c.qty}<small>${esc(describe(c.custom))}</small></div><button data-rm="${i}" aria-label="Remove">&times;</button></div>`).join("")
+    : `<p class="empty">Your bag is empty.</p>`;
 }
 const shortCode = () => "BH-" + Math.random().toString(36).slice(2,6).toUpperCase() + Date.now().toString(36).slice(-2).toUpperCase();
 
 async function checkout(e){
   e.preventDefault();
-  if(!cart.length) return toast("Your bag is empty 🧶");
+  if(!cart.length) return toast("Your bag is empty");
   const btn = $("#checkout"), label = btn.textContent; btn.textContent = "Sending your design…";
   const code = shortCode();
   const name = $("#buyerName").value.trim().slice(0,60), phone = $("#buyerPhone").value.trim().slice(0,30);
@@ -220,19 +181,16 @@ async function checkout(e){
   } catch(err){ console.warn("Order not saved to admin:", err); }
   const lines = cart.map(c => {
     const d = c.custom, extra = [];
-    if(d.text) extra.push(`   ✍️ Name: ${d.text} | Yarn: ${(COLORS.find(x=>x.c===d.color)||{}).n||""} | Style: ${d.font} | Where: ${d.pos}`);
-    if(d.size) extra.push(`   📏 Size: ${d.size}`);
-    if(d.note) extra.push(`   📝 ${d.note}`);
+    if(d.text) extra.push(`   Name: ${d.text} | Yarn: ${(COLORS.find(x=>x.c===d.color)||{}).n||""} | Style: ${d.font} | Where: ${d.pos}`);
+    if(d.size) extra.push(`   Size: ${d.size}`);
+    if(d.note) extra.push(`   Note: ${d.note}`);
     return `• ${c.p.name} x${c.qty} – ${money(c.p.price*c.qty)}` + (extra.length ? "\n" + extra.join("\n") : "");
   }).join("\n");
-  const msg = `Hello ${STORE.name} 👋, I want to order:\n${lines}\n\nTotal: ${money(total)}\n🆔 Order ${code} (my design is saved in your admin)` + (name ? `\n👤 ${name}` : "");
+  const msg = `Hello ${STORE.name}, I want to order:\n${lines}\n\nTotal: ${money(total)}\nOrder ${code} (my design is saved in your admin)` + (name ? `\nName: ${name}` : "");
   btn.textContent = label;
   location.href = `https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`;
 }
 $("#checkout").addEventListener("click", checkout);
-$("#dealBtn").addEventListener("click", e => { e.preventDefault(); const set = PRODUCTS.slice(0,3);
-  const msg = `Hello ${STORE.name} 👋, I want the Cozy Set:\n` + set.map(p => `• ${p.name}`).join("\n") + `\nPlease tell me how to customize with names.`;
-  location.href = `https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`; });
 $("#openCart").addEventListener("click", () => setCart(true));
 $("#closeCart").addEventListener("click", () => setCart(false));
 $("#overlay").addEventListener("click", () => setCart(false));
