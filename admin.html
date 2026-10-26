@@ -40,6 +40,7 @@
     <button class="tab on" data-tab="orders">🧶 Orders <i id="newBadge" class="badge hidden">0</i></button>
     <button class="tab" data-tab="products">🛍️ Products</button>
     <button class="tab" data-tab="categories">🏷️ Categories</button>
+    <button class="tab" data-tab="set">🎁 Gift set</button>
     <button class="tab" data-tab="settings">⚙️ Settings</button>
   </nav>
 
@@ -98,6 +99,23 @@
       </div>
       <h2>Your categories <span class="muted small" id="cCount"></span></h2>
       <div class="card" id="catList"></div>
+    </section>
+
+    <!-- GIFT SET -->
+    <section id="tab-set" class="hidden">
+      <div class="card">
+        <h2>Gift set</h2>
+        <p class="small muted">You choose what goes in the set on your shop. Customers see the pieces, the 3D box and the set price after your discount.</p>
+        <label class="check"><input type="checkbox" id="setOn"> Show the gift set on my shop</label>
+        <label>Set name <input id="setTitle" maxlength="30" placeholder="The Cozy Set"></label>
+        <label>Short description (optional) <textarea id="setText" rows="2" maxlength="160" placeholder="Pieces picked to go together, wrapped like a gift."></textarea></label>
+        <label>Discount % (0 for none) <input id="setDisc" type="number" inputmode="numeric" min="0" max="90" value="10"></label>
+        <div class="lab">Pick the products in the set (2 to 6)</div>
+        <div class="setpick" id="setPick"></div>
+        <p class="small" id="setSummary"></p>
+        <button class="btn" id="saveSet">Save gift set</button>
+        <p class="msg" id="setMsg"></p>
+      </div>
     </section>
 
     <!-- SETTINGS -->

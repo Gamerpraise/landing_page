@@ -13,6 +13,11 @@ const GPRAISE = "2348057940822";   // watermark contact (don't remove)
 const $ = s => document.querySelector(s);
 const money = n => STORE.currency + Number(n).toLocaleString();
 let PRODUCTS = [], CATEGORIES = [], loaded = false, cart = [], filter = "All";
+let SET = { on:false, title:"", text:"", discount:10, ids:[] };      // gift set, controlled from Admin
+let query = "", sortBy = "new", oneCol = false;
+const wish = new Set();
+try { JSON.parse(localStorage.getItem("bh-wish") || "[]").forEach(id => wish.add(String(id))); oneCol = localStorage.getItem("bh-one") === "1"; } catch(e){}
+const saveWish = () => { try { localStorage.setItem("bh-wish", JSON.stringify([...wish])); } catch(e){} };
 const byId = id => PRODUCTS.find(p => String(p.id) === String(id));
 
 /* ---------- Load seller's settings + products from Firebase ---------- */
@@ -22,7 +27,8 @@ async function loadRemote(){
   try {
     const [ps, st] = await Promise.all([fs.getDocs(fs.collection(db, "products")), fs.getDoc(fs.doc(db, "settings", "store"))]);
     if(st.exists()){ const s = st.data(); if(s.whatsapp) STORE.whatsapp = s.whatsapp; if(s.name) STORE.name = s.name; if(s.currency) STORE.currency = s.currency;
-      if(Array.isArray(s.categories)) CATEGORIES = s.categories.filter(c => c && c.name); }
+      if(Array.isArray(s.categories)) CATEGORIES = s.categories.filter(c => c && c.name);
+      if(s.set && typeof s.set === "object") SET = { ...SET, ...s.set }; }
     const list = ps.docs.map(d => ({ id:d.id, ...d.data(), img:d.data().image })).filter(p => p.img && p.name);
     list.sort((a,b) => (a.ts||0) - (b.ts||0)); PRODUCTS = list;
   } catch(e){ console.warn("Couldn't load the shop:", e); }
@@ -36,37 +42,63 @@ function renderCats(){
   document.querySelectorAll('a[href="#categories"]').forEach(l => l.classList.toggle("hidden", !has));
   $("#catGrid").innerHTML = CATEGORIES.map(c =>
     `<div class="cat tilt" data-reveal data-cat="${esc(c.name)}"><span class="ico">${esc(c.icon || "🧶")}</span><h3>${esc(c.name)}</h3><p>${esc(c.text || "")}</p></div>`).join("");
-  if(filter !== "All" && !CATEGORIES.some(c => c.name === filter)) filter = "All";
-  $("#chips").classList.toggle("hidden", !has);
+  if(filter === "♥" && !wish.size) filter = "All";
+  if(filter !== "All" && filter !== "♥" && !CATEGORIES.some(c => c.name === filter)) filter = "All";
+  $("#chips").classList.toggle("hidden", !has && !wish.size);
   $("#chips").innerHTML = ["All", ...CATEGORIES.map(c => c.name)].map(n =>
-    `<button class="chip ${n===filter?"on":""}" data-f="${esc(n)}">${esc(n)}</button>`).join("");
+    `<button class="chip ${n===filter?"on":""}" data-f="${esc(n)}">${esc(n)}</button>`).join("")
+    + (wish.size ? `<button class="chip ${filter==="♥"?"on":""}" data-f="♥">♥ Saved (${wish.size})</button>` : "");
 }
 function renderProducts(){
-  const list = PRODUCTS.filter(p => filter==="All" || p.cat===filter);
+  const q = query.trim().toLowerCase();
+  let list = PRODUCTS.filter(p => (filter === "All" || (filter === "♥" ? wish.has(String(p.id)) : p.cat === filter))
+    && (!q || [p.name, p.cat, p.tag].some(x => String(x || "").toLowerCase().includes(q))));
+  list = [...list].sort(sortBy === "low" ? (a,b) => a.price - b.price : sortBy === "high" ? (a,b) => b.price - a.price : (a,b) => (b.ts||0) - (a.ts||0));
+  $("#productGrid").classList.toggle("one", oneCol);
+  $("#resultCount").textContent = loaded && PRODUCTS.length && (q || filter !== "All") ? `${list.length} ${list.length === 1 ? "piece" : "pieces"} found` : "";
+  $("#clearSearch").classList.toggle("hidden", !q);
   $("#productGrid").innerHTML = list.length ? list.map(p => `
-    <article class="product tilt" data-reveal>
+    <article class="product tilt">
       ${p.tag ? `<span class="tag">${esc(p.tag)}</span>` : ""}
-      <div class="pimg" data-cust="${esc(p.id)}"><img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy"></div>
+      <button class="heart ${wish.has(String(p.id)) ? "on" : ""}" data-heart="${esc(p.id)}" aria-label="Save ${esc(p.name)}">${wish.has(String(p.id)) ? "♥" : "♡"}</button>
+      <div class="pimg" data-cust="${esc(p.id)}"><img src="${esc(p.img)}" alt="${esc(p.name)}" loading="lazy"><span class="glass">View in 3D</span></div>
       <div class="pinfo">
         <div class="cat-name">${esc(p.cat)}</div>
         <h3>${esc(p.name)}</h3>
         <div class="price price-line">${money(p.price)}${p.old ? `<s>${money(p.old)}</s>` : ""}</div>
         <div class="prow">
-          <button class="cust" data-cust="${esc(p.id)}">${p.custom ? "Customize ✨" : "View in 3D ✨"}</button>
+          <button class="cust" data-cust="${esc(p.id)}">${p.custom ? "Customize" : "View in 3D"} <i class="sp">✨</i></button>
           <button class="add" data-add="${esc(p.id)}" aria-label="Quick add ${esc(p.name)}">+</button>
         </div>
       </div>
-    </article>`).join("") : `<p class="empty" style="grid-column:1/-1">${loaded ? "Nothing here yet – coming soon! 🧶" : "Loading the shop… 🧶"}</p>`;
+    </article>`).join("")
+    : (!loaded ? `<p class="empty" style="grid-column:1/-1">Loading the shop… 🧶</p>`
+      : !PRODUCTS.length ? `<p class="empty" style="grid-column:1/-1">Nothing here yet – coming soon! 🧶</p>`
+      : `<p class="empty" style="grid-column:1/-1">${filter === "♥" ? "You haven't saved anything yet. Tap the ♡ on a piece you love." : `No pieces match “${esc(query)}”. Try another word.`}</p>`);
   initEffects();
+}
+/* ---------- Gift set (the seller chooses the pieces in Admin) ---------- */
+function setInfo(){
+  const items = (SET.ids || []).map(byId).filter(Boolean).slice(0, 6);
+  const sum = items.reduce((a,p) => a + Number(p.price), 0);
+  const disc = Math.min(90, Math.max(0, Number(SET.discount) || 0));
+  return { items, sum, disc, price: Math.round(sum * (1 - disc/100)), show: !!SET.on && items.length >= 2 };
+}
+function renderSet(){
+  const { items, sum, disc, price, show } = setInfo();
+  $("#spin").classList.toggle("hidden", !show);
+  document.querySelectorAll('a[href="#spin"]').forEach(l => l.classList.toggle("hidden", !show));
+  if(!show) return;
+  $("#setTitle").textContent = SET.title || "The Gift Set";
+  $("#setText").textContent = SET.text || "Pieces picked to go together, knitted to match and wrapped like a gift. Add a name to each piece for a gift she'll never forget.";
+  $("#setBadge").textContent = disc > 0 ? `🎁 Save ${disc}%` : "🎁 Gift favourite";
+  $("#setItems").innerHTML = items.map(p => `<li>${esc(p.name)}</li>`).join("");
+  $("#dealPrice").innerHTML = disc > 0 ? `<s>${money(sum)}</s> <b>${money(price)}</b>` : `<b>${money(sum)}</b>`;
+  renderBox();
 }
 function renderAll(){
   document.querySelectorAll("#shopName,.fname").forEach(el => el.textContent = STORE.name);
-  renderCats(); renderProducts(); renderRing(); renderBox(); renderCart();
-  const deal = PRODUCTS.length >= 3;
-  $("#spin").classList.toggle("hidden", !deal);
-  document.querySelectorAll('a[href="#spin"]').forEach(l => l.classList.toggle("hidden", !deal));
-  if(deal){ const set = PRODUCTS.slice(0,3), sum = set.reduce((a,p) => a + Number(p.price), 0);
-    $("#dealPrice").innerHTML = `<s>${money(sum)}</s> <b>${money(Math.round(sum*.9/100)*100)}</b>`; }
+  renderCats(); renderProducts(); renderRing(); renderSet(); renderCart();
   initEffects();
 }
 
@@ -93,7 +125,7 @@ scene.addEventListener("mousemove", e => { if(dragging) return; const b = scene.
 /* ---------- Spin box ---------- */
 const box = $("#box"), stage = $("#boxStage");
 function renderBox(){
-  const imgs = PRODUCTS.map(p => p.img); while(imgs.length && imgs.length < 6) imgs.push(...imgs);
+  const imgs = setInfo().items.map(p => p.img); while(imgs.length && imgs.length < 6) imgs.push(...imgs);
   box.innerHTML = imgs.slice(0,6).map(src => `<div class="face"><img src="${esc(src)}" alt=""></div>`).join(""); placeBox();
 }
 function placeBox(){
@@ -174,8 +206,8 @@ const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting)
 function initEffects(){
   document.querySelectorAll(".tilt").forEach(el => {
     if(el.dataset.t) return; el.dataset.t = 1;
-    el.addEventListener("pointermove", e => { if(e.pointerType === "touch") return; const b = el.getBoundingClientRect();
-      const x = (e.clientX-b.left)/b.width-.5, y = (e.clientY-b.top)/b.height-.5; el.style.transform = `rotateY(${x*12}deg) rotateX(${-y*12}deg) translateY(-6px)`; });
+    el.addEventListener("pointermove", e => { if(e.pointerType !== "mouse") return; const b = el.getBoundingClientRect();
+      const x = (e.clientX-b.left)/b.width-.5, y = (e.clientY-b.top)/b.height-.5; el.style.transform = `perspective(900px) rotateY(${x*8}deg) rotateX(${-y*8}deg) translateY(-4px)`; });
     el.addEventListener("pointerleave", () => el.style.transform = "");
   });
   document.querySelectorAll("[data-reveal]:not(.show)").forEach(el => io.observe(el));
@@ -230,8 +262,9 @@ async function checkout(e){
   location.href = `https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`;
 }
 $("#checkout").addEventListener("click", checkout);
-$("#dealBtn").addEventListener("click", e => { e.preventDefault(); const set = PRODUCTS.slice(0,3);
-  const msg = `Hello ${STORE.name} 👋, I want the Cozy Set:\n` + set.map(p => `• ${p.name}`).join("\n") + `\nPlease tell me how to customize with names.`;
+$("#dealBtn").addEventListener("click", e => { e.preventDefault(); const { items, price, disc } = setInfo();
+  const msg = `Hello ${STORE.name} 👋, I want ${SET.title || "the gift set"}:\n` + items.map(p => `• ${p.name}`).join("\n")
+    + `\nSet price: ${money(price)}${disc > 0 ? ` (${disc}% off)` : ""}\nPlease tell me how to add the names.`;
   location.href = `https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`; });
 $("#openCart").addEventListener("click", () => setCart(true));
 $("#closeCart").addEventListener("click", () => setCart(false));
@@ -239,11 +272,62 @@ $("#overlay").addEventListener("click", () => setCart(false));
 addEventListener("keydown", e => { if(e.key === "Escape"){ closeCustomizer(); setCart(false); } });
 
 document.addEventListener("click", e => {
+  const hb = e.target.closest("[data-heart]");
+  if(hb){ const id = String(hb.dataset.heart); const on = !wish.has(id); on ? wish.add(id) : wish.delete(id); saveWish();
+    hb.classList.toggle("on", on); hb.textContent = on ? "♥" : "♡"; toast(on ? "Saved to your favourites" : "Removed from favourites");
+    renderCats(); if(filter === "♥") renderProducts(); return; }
   const add = e.target.closest("[data-add]"); if(add){ const p = byId(add.dataset.add); if(p) addToCart(p, defaultCustom(), 1); }
   const cu = e.target.closest("[data-cust]"); if(cu) openCustomizer(cu.dataset.cust);
   const rm = e.target.closest("[data-rm]"); if(rm){ cart.splice(+rm.dataset.rm, 1); renderCart(); }
   const chip = e.target.closest(".chip"); if(chip){ filter = chip.dataset.f; document.querySelectorAll(".chip").forEach(c => c.classList.toggle("on", c === chip)); renderProducts(); }
   const cat = e.target.closest(".cat"); if(cat){ filter = cat.dataset.cat; document.querySelectorAll(".chip").forEach(c => c.classList.toggle("on", c.dataset.f === filter)); renderProducts(); $("#products").scrollIntoView({ behavior:"smooth" }); }
 });
+
+/* ---------- search, sort, layout ---------- */
+const ICON_2 = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>`;
+const ICON_1 = `<svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="18" height="8" rx="2"/><rect x="3" y="13" width="18" height="8" rx="2"/></svg>`;
+const setGT = () => { $("#gridToggle").innerHTML = oneCol ? ICON_1 : ICON_2; $("#gridToggle").setAttribute("aria-label", oneCol ? "Show two per row" : "Show one per row"); };
+$("#search").addEventListener("input", e => { query = e.target.value; renderProducts(); });
+$("#clearSearch").addEventListener("click", () => { query = ""; $("#search").value = ""; renderProducts(); $("#search").focus(); });
+$("#sort").addEventListener("change", e => { sortBy = e.target.value; renderProducts(); });
+$("#gridToggle").addEventListener("click", () => { oneCol = !oneCol; try { localStorage.setItem("bh-one", oneCol ? "1" : "0"); } catch(e){} setGT(); renderProducts(); });
+setGT();
+
+/* hide the floating Shop Now button while the products are on screen */
+new IntersectionObserver(([en]) => document.querySelector(".sticky-btn").classList.toggle("off", en.isIntersecting), { threshold:0 }).observe($("#products"));
+
+/* ---------- 3D name studio ---------- */
+const ST = { color: COLORS[0].c, font: FONTS[0] };
+const stWord = $("#stWord"), stStage = $("#stStage");
+function renderStudioControls(){
+  $("#stColors").innerHTML = COLORS.map(c => `<button class="sw ${c.c===ST.color?"on":""}" data-stc="${c.c}" style="background:${c.c}" aria-label="${c.n}"></button>`).join("");
+  $("#stFonts").innerHTML = FONTS.map(f => `<button class="oc ${f.n===ST.font.n?"on":""}" data-stf="${f.n}" style="font-family:${f.f}">${f.n}</button>`).join("");
+}
+function renderStudio(){
+  const txt = $("#stName").value.trim() || "Your name", w = stStage.clientWidth || 320;
+  const fs = Math.max(34, Math.min(130, (w * .86) / (txt.length * .52 + .6))) * ST.font.k;
+  const N = 14, layers = [];
+  for(let i = 0; i < N; i++){
+    const front = i === N - 1, z = (i - N/2) * 2.4;
+    const col = front ? ST.color : `color-mix(in srgb, ${ST.color} ${35 + i*4}%, #4a1c36)`;
+    layers.push(`<span class="stl ${front?"front":""}" style="transform:translateZ(${z}px);color:${col}">${esc(txt)}</span>`);
+  }
+  stWord.style.cssText = `font-family:${ST.font.f};font-size:${fs}px`;
+  stWord.innerHTML = layers.join("");
+}
+$("#stName").addEventListener("input", renderStudio);
+$("#stColors").addEventListener("click", e => { const b = e.target.closest("[data-stc]"); if(!b) return; ST.color = b.dataset.stc; renderStudioControls(); renderStudio(); });
+$("#stFonts").addEventListener("click", e => { const b = e.target.closest("[data-stf]"); if(!b) return; ST.font = FONTS.find(f => f.n === b.dataset.stf); renderStudioControls(); renderStudio(); });
+let stY = -20, stX = -8, stDrag = false, stx = 0, sty = 0;
+stStage.addEventListener("pointerdown", e => { stDrag = true; stx = e.clientX; sty = e.clientY; stStage.setPointerCapture(e.pointerId); });
+stStage.addEventListener("pointermove", e => { if(!stDrag) return; stY += (e.clientX - stx) * .6; stX = Math.max(-35, Math.min(25, stX - (e.clientY - sty) * .3)); stx = e.clientX; sty = e.clientY; });
+["pointerup","pointercancel"].forEach(ev => stStage.addEventListener(ev, () => stDrag = false));
+(function stLoop(){
+  if(!stDrag){ const target = Math.sin(Date.now() / 1500) * 26; stY += (target - (((stY + 180) % 360) - 180)) * .03; stX += (-8 - stX) * .03; }
+  stWord.style.transform = `rotateX(${stX}deg) rotateY(${stY}deg)`;
+  requestAnimationFrame(stLoop);
+})();
+addEventListener("resize", renderStudio);
+renderStudioControls(); renderStudio();
 
 renderAll(); loadRemote();

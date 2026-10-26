@@ -42,6 +42,11 @@ The `apiKey` in `firebase.js` is meant to be public; the rules protect your data
 4. **Products:** choose a photo, add name, category, price, save. Photos are cropped square and compressed to about 80 KB before being stored in Firestore, so Firebase Storage is not needed. Untick "Customers can add a name" for items that can't be personalised.
 5. **Orders:** when a customer checks out, their design appears with the name, yarn colour, style, position, size and notes. Knit it, then mark it done. The WhatsApp message carries the same order code (like `BH-AB12CD`).
 
+## New in this version
+- **Shop:** search bar, sort (newest / price), favourites (heart), and 2 products per row on phones with a 1-per-row toggle. Product photos stay inside their cards.
+- **Gift set (Admin > Gift set):** you choose which products are in the set, its name, description and discount %. Customers see the 3D box with your pieces and the discounted price. It stays hidden until you switch it on and pick 2 to 6 products.
+- **Name studio:** customers type a name and see it in 3D yarn, pick a colour and lettering style.
+
 ## Hosting
 The site uses ES modules + Firebase, so it must be served online (not opened as a file). GitHub Pages, Netlify or Vercel all work. Add the live domain in Firebase (setup step 2).
 

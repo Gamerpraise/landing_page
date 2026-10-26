@@ -3,7 +3,7 @@ import { COLORS, esc, designHTML } from "./design.js";
 
 const $ = s => document.querySelector(s);
 const toast = m => { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 2200); };
-let K, products = [], orders = [], cats = [], settings = { currency:"₦" }, editId = null, newImg = null, oldImg = null, timer;
+let K, products = [], orders = [], cats = [], setSel = [], settings = { currency:"₦" }, editId = null, newImg = null, oldImg = null, timer;
 
 const money = n => (settings.currency || "") + Number(n || 0).toLocaleString();
 
@@ -56,7 +56,7 @@ function show(w){ $("#login").classList.toggle("hidden", w !== "login"); $("#app
 /* ---------- Tabs ---------- */
 document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
   document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x === t));
-  ["orders","products","categories","settings"].forEach(n => $("#tab-" + n).classList.toggle("hidden", n !== t.dataset.tab));
+  ["orders","products","categories","set","settings"].forEach(n => $("#tab-" + n).classList.toggle("hidden", n !== t.dataset.tab));
 });
 
 /* ---------- Load data ---------- */
@@ -66,11 +66,13 @@ async function loadSettings(){
     if(s.exists()) settings = { ...settings, ...s.data() };
     $("#sWa").value = settings.whatsapp || ""; $("#sName").value = settings.name || "BusyHands"; $("#sCur").value = settings.currency || "₦";
     cats = Array.isArray(settings.categories) ? settings.categories : []; renderCats();
+    const st = settings.set || {}; setSel = Array.isArray(st.ids) ? st.ids.map(String) : [];
+    $("#setOn").checked = !!st.on; $("#setTitle").value = st.title || ""; $("#setText").value = st.text || ""; $("#setDisc").value = st.discount ?? 10; renderSetPick();
   } catch(e){ toast("Couldn't load settings – check Firestore rules"); }
 }
 async function loadProducts(){
   try { const r = await K.fs.getDocs(K.fs.collection(K.db, "products"));
-    products = r.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b) => (b.ts||0) - (a.ts||0)); renderProducts(); renderCats();
+    products = r.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b) => (b.ts||0) - (a.ts||0)); renderProducts(); renderCats(); renderSetPick();
   } catch(e){ toast("Couldn't load products – check Firestore rules"); }
 }
 async function loadOrders(){
@@ -208,6 +210,34 @@ $("#catList").onclick = async e => {
   if(up){ const i = +up.dataset.cup; if(i > 0){ cats = [...cats]; [cats[i-1], cats[i]] = [cats[i], cats[i-1]]; await saveCats("Order saved"); } }
   if(del){ const i = +del.dataset.cdel, c = cats[i], n = products.filter(p => p.cat === c.name).length;
     if(confirm(n ? `Delete “${c.name}”? ${n} product(s) use it. They stay in your shop but won't appear under this category.` : `Delete “${c.name}”?`)){ cats = cats.filter((_, k) => k !== i); await saveCats("Category deleted"); } }
+};
+
+/* ---------- Gift set (the seller picks the pieces) ---------- */
+function setNumbers(){
+  const chosen = setSel.map(id => products.find(p => String(p.id) === id)).filter(Boolean);
+  const sum = chosen.reduce((a, p) => a + Number(p.price), 0), d = Math.min(90, Math.max(0, Number($("#setDisc").value) || 0));
+  return { chosen, sum, d, price: Math.round(sum * (1 - d/100)) };
+}
+function renderSetPick(){
+  $("#setPick").innerHTML = products.length ? products.map(p => {
+    const on = setSel.includes(String(p.id));
+    return `<button type="button" class="sp-item ${on ? "on" : ""}" data-sp="${esc(p.id)}"><span class="tick">✔</span><img src="${esc(p.image)}" alt=""><b>${esc(p.name)}</b><span>${esc(settings.currency || "₦")}${Number(p.price).toLocaleString()}</span></button>`; }).join("")
+    : `<p class="empty">Add products first, then come back to build a set.</p>`;
+  const { chosen, sum, d, price } = setNumbers(), cur = settings.currency || "₦";
+  $("#setSummary").textContent = chosen.length ? `${chosen.length} selected · pieces total ${cur}${sum.toLocaleString()} · customers pay ${cur}${price.toLocaleString()}${d ? ` (${d}% off)` : ""}` : "Nothing selected yet.";
+}
+$("#setPick").onclick = e => { const b = e.target.closest("[data-sp]"); if(!b) return; const id = String(b.dataset.sp);
+  if(setSel.includes(id)) setSel = setSel.filter(x => x !== id);
+  else if(setSel.length >= 6) return ($("#setMsg").textContent = "A set can have up to 6 pieces.");
+  else setSel = [...setSel, id];
+  $("#setMsg").textContent = ""; renderSetPick(); };
+$("#setDisc").oninput = renderSetPick;
+$("#saveSet").onclick = async () => {
+  const ids = setSel.filter(id => products.some(p => String(p.id) === id)), on = $("#setOn").checked;
+  if(on && ids.length < 2) return ($("#setMsg").textContent = "Pick at least 2 products, or untick “Show the gift set”.");
+  const set = { on, title: $("#setTitle").value.trim(), text: $("#setText").value.trim(), discount: Math.min(90, Math.max(0, Math.round(Number($("#setDisc").value) || 0))), ids };
+  try { await K.fs.setDoc(K.fs.doc(K.db, "settings", "store"), { set }, { merge:true }); settings.set = set; $("#setMsg").textContent = ""; toast(on ? "Gift set saved" : "Saved (hidden on shop)"); }
+  catch(err){ $("#setMsg").textContent = "Couldn't save: " + (err.code || err.message); }
 };
 
 /* ---------- Settings ---------- */

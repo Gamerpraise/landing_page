@@ -65,3 +65,13 @@ input[type=checkbox]{width:auto;margin:0 8px 0 0;accent-color:var(--pink)}.check
 .catrow .ci-t{flex:1;min-width:0}.catrow .ci-t b{display:block}.catrow .ci-t span{font-size:.8rem;color:var(--muted)}
 .three{display:grid;grid-template-columns:70px 1fr;gap:12px}
 .mini:disabled{opacity:.4;cursor:default}
+
+.lab{font-weight:600;font-size:.85rem}
+.setpick{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px}
+.sp-item{position:relative;border:2.5px solid transparent;border-radius:16px;background:#fff;padding:6px;text-align:left;box-shadow:0 4px 12px rgba(42,22,51,.08);transition:.15s;font-size:.78rem;line-height:1.25}
+.sp-item img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:11px;display:block;margin-bottom:5px}
+.sp-item b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-item span{color:var(--muted)}
+.sp-item.on{border-color:var(--pink)}
+.sp-item .tick{position:absolute;top:10px;right:10px;width:24px;height:24px;border-radius:50%;background:var(--pink);color:#fff;display:none;place-items:center;font-size:.8rem}
+.sp-item.on .tick{display:grid}
